@@ -279,21 +279,41 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Lista de personal (puedes reemplazar con tus datos reales)
+            // Lista completa de personal proporcionada
             const personal = [
-                "Stefano_Alvarez",
-                "Juan_Perez",
-                "Maria_Gonzalez",
-                "Carlos_Rodriguez",
-                "Laura_Martinez",
-                "Pedro_Sanchez",
-                "Ana_Ramirez",
-                "Luis_Hernandez",
-                "Sofia_Torres",
-                "Miguel_Diaz"
+                "ALAN COLLINS",
+                "ALEJANDRO CORLENE",
+                "ANDREW GRAVES",
+                "ANTHONY BLACK",
+                "BELEN GARCÍA",
+                "DAVID TORO",
+                "EDUARDO TABARES",
+                "ELIZABETH NOVIKOV",
+                "ENDER PERES",
+                "HAKEEM WAHID",
+                "HUNTER BLAKE",
+                "JHON MCLAIN",
+                "JOHAN ANDREU",
+                "JOHNNY MACTAVISH",
+                "KEVIN RUALES",
+                "LOGAN WILLIAMS",
+                "LUCAS PRIETO",
+                "MATHEO HERNANDEZ",
+                "MAURICIO LEPOLLO",
+                "MAX WEXLER",
+                "RAMON CAMPOS",
+                "RICARDO SAPRISA",
+                "SAMUEL FOLEY",
+                "SOLOMONE LAIN",
+                "STEFANO ALVAREZ",
+                "TIM BRADFORD",
+                "WALTER BLUE"
             ];
             
             const selectNombre = document.getElementById('nombre');
+            
+            // Ordenar alfabéticamente la lista de personal
+            personal.sort();
             
             // Llenar el dropdown con los nombres del personal
             personal.forEach(persona => {
@@ -348,7 +368,7 @@
                 
                 try {
                     // Aquí debes reemplazar con tu URL de webhook de Discord
-                    const webhookURL = 'https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX';
+                    const webhookURL = 'https://discord.com/api/webhooks/your_webhook_id/your_webhook_token';
                     
                     const response = await fetch(webhookURL, {
                         method: 'POST',
