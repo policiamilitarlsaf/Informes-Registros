@@ -3,49 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Vehicular</title>
+    <title>Registro Vehicular Militar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
+            --military-dark: #2a4d2a;
+            --military-medium: #3a6b3a;
+            --military-light: #4c884c;
+            --military-sand: #c2b280;
+            --military-tan: #a68a64;
+            --military-black: #1a1a1a;
+            --military-white: #f0f0f0;
         }
         
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Tahoma', 'Arial', sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background: linear-gradient(to bottom, var(--military-dark), var(--military-medium));
+            color: var(--military-white);
             line-height: 1.6;
             padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-attachment: fixed;
         }
         
         .container {
             max-width: 800px;
-            margin: 0 auto;
-            background: white;
+            width: 100%;
+            background: rgba(26, 26, 26, 0.9);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--military-sand);
         }
         
-        header {
-            text-align: center;
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid var(--light-color);
+            border-bottom: 2px solid var(--military-sand);
+            flex-wrap: wrap;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-right: 20px;
+            width: 80px;
+            height: 80px;
+            background-color: var(--military-white);
+            border-radius: 50%;
+            padding: 5px;
+            border: 2px solid var(--military-sand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .title-container {
+            flex: 1;
         }
         
         h1 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
+            color: var(--military-sand);
+            margin-bottom: 5px;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        .subtitle {
+            color: var(--military-white);
+            font-style: italic;
         }
         
         .form-group {
@@ -56,22 +100,24 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: var(--dark-color);
+            color: var(--military-sand);
         }
         
         select, input, textarea {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 1px solid var(--military-tan);
+            border-radius: 4px;
             font-size: 16px;
-            transition: border 0.3s;
+            transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.9);
         }
         
         select:focus, input:focus, textarea:focus {
-            border-color: var(--secondary-color);
+            border-color: var(--military-light);
             outline: none;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            box-shadow: 0 0 8px rgba(76, 136, 76, 0.6);
+            background-color: white;
         }
         
         .datetime-group {
@@ -81,20 +127,29 @@
         }
         
         button {
-            background-color: var(--secondary-color);
+            background: linear-gradient(to bottom, var(--military-light), var(--military-dark));
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 14px 20px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: bold;
             width: 100%;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            border: 1px solid var(--military-sand);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
         }
         
         button:hover {
-            background-color: var(--primary-color);
+            background: linear-gradient(to bottom, var(--military-medium), var(--military-dark));
+            box-shadow: 0 0 10px rgba(76, 136, 76, 0.8);
+        }
+        
+        button i {
+            margin-right: 10px;
         }
         
         .notification {
@@ -102,28 +157,39 @@
             margin: 20px 0;
             border-radius: 5px;
             display: none;
+            text-align: center;
+            font-weight: bold;
         }
         
         .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: rgba(40, 100, 40, 0.8);
+            color: #fff;
+            border: 1px solid #2a7e2a;
         }
         
         .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: rgba(160, 40, 40, 0.8);
+            color: #fff;
+            border: 1px solid #9c2b2b;
         }
         
         footer {
             text-align: center;
             margin-top: 30px;
-            color: #7f8c8d;
+            color: var(--military-tan);
             font-size: 14px;
+            border-top: 1px solid var(--military-sand);
+            padding-top: 20px;
         }
         
-        @media (max-width: 600px) {
+        .military-stripe {
+            height: 5px;
+            background: linear-gradient(to right, var(--military-dark), var(--military-sand), var(--military-dark));
+            margin: 15px 0;
+            border-radius: 2px;
+        }
+        
+        @media (max-width: 650px) {
             .datetime-group {
                 grid-template-columns: 1fr;
             }
@@ -131,19 +197,39 @@
             .container {
                 padding: 20px;
             }
+            
+            .header {
+                flex-direction: column;
+            }
+            
+            .logo {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Registro Vehicular</h1>
-            <p>Complete el formulario para registrar el uso vehicular</p>
-        </header>
+        <div class="header">
+            <div class="logo">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+            </div>
+            <div class="title-container">
+                <h1>Registro Vehicular</h1>
+                <p class="subtitle">Comando de Operaciones Especiales</p>
+            </div>
+        </div>
+        
+        <div class="military-stripe"></div>
         
         <form id="vehicleForm">
             <div class="form-group">
-                <label for="nombre">Nombre:</label>
+                <label for="nombre"><i class="fas fa-user"></i> Nombre:</label>
                 <select id="nombre" required>
                     <option value="">Seleccione su nombre</option>
                     <!-- Las opciones se cargarán con JavaScript -->
@@ -151,23 +237,23 @@
             </div>
             
             <div class="form-group">
-                <label for="unidad">Unidad:</label>
+                <label for="unidad"><i class="fas fa-flag"></i> Unidad:</label>
                 <input type="text" id="unidad" required placeholder="Ej: HQ-MIKE">
             </div>
             
             <div class="form-group datetime-group">
                 <div>
-                    <label for="fecha">Fecha:</label>
+                    <label for="fecha"><i class="fas fa-calendar-alt"></i> Fecha (UTC):</label>
                     <input type="date" id="fecha" required>
                 </div>
                 <div>
-                    <label for="hora">Hora:</label>
+                    <label for="hora"><i class="fas fa-clock"></i> Hora (UTC):</label>
                     <input type="time" id="hora" required>
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="usoInsumos">Uso de Insumos:</label>
+                <label for="usoInsumos"><i class="fas fa-tools"></i> Uso de Insumos:</label>
                 <select id="usoInsumos">
                     <option value="N/A">N/A</option>
                     <option value="Sí">Sí</option>
@@ -176,17 +262,18 @@
             </div>
             
             <div class="form-group">
-                <label for="motivo">Motivo del Uso de Insumos:</label>
+                <label for="motivo"><i class="fas fa-clipboard-list"></i> Motivo del Uso de Insumos:</label>
                 <textarea id="motivo" rows="3" placeholder="Describa el motivo..."></textarea>
             </div>
             
-            <button type="submit">Enviar Registro</button>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Enviar Registro</button>
         </form>
         
         <div id="notification" class="notification"></div>
         
         <footer>
-            <p>Sistema de Registro Vehicular &copy; 2025</p>
+            <p>Sistema de Registro Vehicular Militar &copy; 2025</p>
+            <p>Todos los registros son monitoreados y auditados</p>
         </footer>
     </div>
 
@@ -199,7 +286,11 @@
                 "Maria_Gonzalez",
                 "Carlos_Rodriguez",
                 "Laura_Martinez",
-                "Pedro_Sanchez"
+                "Pedro_Sanchez",
+                "Ana_Ramirez",
+                "Luis_Hernandez",
+                "Sofia_Torres",
+                "Miguel_Diaz"
             ];
             
             const selectNombre = document.getElementById('nombre');
@@ -212,10 +303,24 @@
                 selectNombre.appendChild(option);
             });
             
-            // Establecer fecha y hora actual por defecto
-            const now = new Date();
-            document.getElementById('fecha').value = now.toISOString().split('T')[0];
-            document.getElementById('hora').value = now.toTimeString().substring(0, 5);
+            // Establecer fecha y hora UTC actual por defecto
+            function setUTCDateTime() {
+                const now = new Date();
+                
+                // Obtener fecha UTC en formato YYYY-MM-DD
+                const utcDate = now.toISOString().split('T')[0];
+                
+                // Obtener hora UTC en formato HH:MM
+                const utcTime = now.toISOString().substr(11, 5);
+                
+                document.getElementById('fecha').value = utcDate;
+                document.getElementById('hora').value = utcTime;
+            }
+            
+            setUTCDateTime();
+            
+            // Actualizar la hora cada minuto
+            setInterval(setUTCDateTime, 60000);
             
             // Manejar el envío del formulario
             document.getElementById('vehicleForm').addEventListener('submit', async function(e) {
@@ -252,18 +357,16 @@
                         },
                         body: JSON.stringify({
                             content: mensaje,
-                            username: 'Registro Vehicular',
-                            avatar_url: 'https://example.com/avatar.png' // Opcional
+                            username: 'Registro Vehicular Militar',
+                            avatar_url: 'https://i.imgur.com/FeE9uvO.png'
                         })
                     });
                     
                     if (response.ok) {
                         showNotification('Registro enviado exitosamente a Discord', 'success');
                         document.getElementById('vehicleForm').reset();
-                        // Restablecer fecha y hora
-                        const now = new Date();
-                        document.getElementById('fecha').value = now.toISOString().split('T')[0];
-                        document.getElementById('hora').value = now.toTimeString().substring(0, 5);
+                        // Restablecer fecha y hora UTC
+                        setUTCDateTime();
                     } else {
                         showNotification('Error al enviar el registro: ' + response.statusText, 'error');
                     }
