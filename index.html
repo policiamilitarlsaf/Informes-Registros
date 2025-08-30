@@ -113,7 +113,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 220px;
+            min-height: 220px; /* Altura mínima aumentada */
             justify-content: center;
         }
         
@@ -135,23 +135,24 @@
             font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            line-height: 1.3;
+            line-height: 1.3; /* Mejor espaciado entre líneas */
         }
         
         .menu-option p {
             color: var(--military-light);
-            font-size: 0.95rem;
-            line-height: 1.4;
-            max-width: 100%;
+            font-size: 0.95rem; /* Tamaño de fuente ligeramente reducido */
+            line-height: 1.4; /* Mejor espaciado entre líneas */
+            max-width: 100%; /* Asegura que no se desborde */
         }
         
+        /* Ajustes específicos para la opción de Informes/Suministros */
         .menu-option[data-target="informes-suministros"] h2 {
-            font-size: 1.3rem;
+            font-size: 1.3rem; /* Tamaño ligeramente más pequeño para el título */
             margin-bottom: 8px;
         }
         
         .menu-option[data-target="informes-suministros"] p {
-            font-size: 0.9rem;
+            font-size: 0.9rem; /* Tamaño más pequeño para el párrafo */
         }
         
         .submenu {
@@ -330,7 +331,7 @@
             }
             
             .menu-option {
-                min-height: 180px;
+                min-height: 180px; /* Altura reducida en móviles */
                 padding: 20px 15px;
             }
             
@@ -475,11 +476,11 @@
             "ENDER PERES", "HAKEEM WAHID", "HUNTER BLAKE", "JHON MCLAIN",
             "JOHAN ANDREU", "JOHNNY MACTAVISH", "KEVIN RUALES", "LOGAN WILLIAMS",
             "LUCAS PRIETO", "MATHEO HERNANDEZ", "MAURICIO LEPOLLO", "MAX WEXLER",
-            "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOoley", "SOLOMONE LAIN",
+            "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOLEY", "SOLOMONE LAIN",
             "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
         ];
 
-        // Webhooks de Discord
+        // Webhooks de Discord (reemplazar con URLs reales)
         const webhooks = {
             informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
             aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
@@ -498,28 +499,6 @@
             entradas_salidas: "ENTRADAS/SALIDAS",
             registro_unidades: "REGISTRO DE UNIDADES"
         };
-
-        // Función para formatear la fecha y hora en español
-        function formatDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
-                timeZone: 'UTC'
-            };
-            
-            let dateTimeStr = now.toLocaleDateString('es-ES', options);
-            
-            // Capitalizar la primera letra de cada palabra
-            dateTimeStr = dateTimeStr.replace(/\b\w/g, l => l.toUpperCase());
-            
-            return dateTimeStr;
-        }
 
         // Inicializar la página
         document.addEventListener('DOMContentLoaded', function() {
@@ -549,7 +528,8 @@
 
         // Establecer valores por defecto UTC en campos de fecha/hora
         function setUTCDateTimeDefaults() {
-            const dateTimeStr = formatDateTime();
+            const now = new Date();
+            const utcString = now.toUTCString().replace('GMT', 'UTC');
             
             // Establecer en campos relevantes
             const dateTimeFields = [
@@ -561,7 +541,7 @@
             dateTimeFields.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 if (field) {
-                    field.value = dateTimeStr;
+                    field.value = utcString;
                 }
             });
         }
@@ -738,7 +718,7 @@
             const webhookURL = webhooks[type];
             
             // Verificar si la URL del webhook está configurada correctamente
-            if (!webhookURL) {
+            if (!webhookURL || webhookURL.includes('INFORMES')) {
                 showNotification('Por favor, configura las URLs de webhook en el código JavaScript.', 'error');
                 return;
             }
