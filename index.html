@@ -113,6 +113,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 220px;
+            justify-content: center;
         }
         
         .menu-option:hover {
@@ -133,10 +135,22 @@
             font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            line-height: 1.3;
         }
         
         .menu-option p {
             color: var(--military-light);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            max-width: 100%;
+        }
+        
+        .menu-option[data-target="informes-suministros"] h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        
+        .menu-option[data-target="informes-suministros"] p {
             font-size: 0.9rem;
         }
         
@@ -155,7 +169,11 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 极速4);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .submenu-option:hover {
@@ -166,6 +184,12 @@
         .submenu-option h2 {
             color: var(--military-tan);
             margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .submenu-option p {
+            color: var(--military-white);
+            font-size: 0.9rem;
         }
         
         .form-container {
@@ -255,7 +279,7 @@
         
         .back-button {
             background: linear-gradient(to bottom, #6c757d, #495057);
-            box-shadow: 0 4px 0 #343a40;
+            box-shadow: 0 4px 极速 #343a40;
             margin-right: 10px;
         }
         
@@ -303,6 +327,19 @@
             
             .back-button, button[type="submit"] {
                 width: 100%;
+            }
+            
+            .menu-option {
+                min-height: 180px;
+                padding: 20px 15px;
+            }
+            
+            .menu-option h2 {
+                font-size: 1.2rem;
+            }
+            
+            .menu-option p {
+                font-size: 0.85rem;
             }
         }
         
@@ -618,7 +655,7 @@
             "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
         ];
 
-        // Webhooks de Discord (reemplazar con URLs reales)
+        // Webhooks de Discord
         const webhooks = {
             informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
             aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
@@ -633,10 +670,32 @@
             informes: "INFORMES",
             aduanas: "ADUANAS",
             entrega_suministros: "ENTREGA DE SUMINISTROS",
-            libro_guardia: "LIBRO_GUARDIA",
+            libro_guardia: "LIBRO DE GUARDIA",
             entradas_salidas: "ENTRADAS/SALIDAS",
             registro_unidades: "REGISTRO DE UNIDADES"
         };
+
+        // Función para formatear la fecha y hora en español
+        function formatDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                timeZone: 'UTC'
+            };
+            
+            let dateTimeStr = now.toLocaleDateString('es-ES', options);
+            
+            // Capitalizar la primera letra de cada palabra
+            dateTimeStr = dateTimeStr.replace(/\b\w/g, l => l.toUpperCase());
+            
+            return dateTimeStr;
+        }
 
         // Inicializar la página
         document.addEventListener('DOMContentLoaded', function() {
@@ -666,8 +725,7 @@
 
         // Establecer valores por defecto UTC en campos de fecha/hora
         function setUTCDateTimeDefaults() {
-            const now = new Date();
-            const utcString = now.toUTCString().replace('GMT', 'UTC');
+            const dateTimeStr = formatDateTime();
             
             // Establecer en campos relevantes
             const dateTimeFields = [
@@ -679,7 +737,7 @@
             dateTimeFields.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 if (field) {
-                    field.value = utcString;
+                    field.value = dateTimeStr;
                 }
             });
         }
@@ -856,7 +914,7 @@
             const webhookURL = webhooks[type];
             
             // Verificar si la URL del webhook está configurada correctamente
-            if (!webhookURL || webhookURL.includes('INFORMES')) {
+            if (!webhookURL) {
                 showNotification('Por favor, configura las URLs de webhook en el código JavaScript.', 'error');
                 return;
             }
