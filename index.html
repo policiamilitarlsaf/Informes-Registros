@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Vehicular</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .datetime-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .notification {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .datetime-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Registro Vehicular</h1>
+            <p>Complete el formulario para registrar el uso vehicular</p>
+        </header>
+        
+        <form id="vehicleForm">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <select id="nombre" required>
+                    <option value="">Seleccione su nombre</option>
+                    <!-- Las opciones se cargarán con JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="unidad">Unidad:</label>
+                <input type="text" id="unidad" required placeholder="Ej: HQ-MIKE">
+            </div>
+            
+            <div class="form-group datetime-group">
+                <div>
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" required>
+                </div>
+                <div>
+                    <label for="hora">Hora:</label>
+                    <input type="time" id="hora" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="usoInsumos">Uso de Insumos:</label>
+                <select id="usoInsumos">
+                    <option value="N/A">N/A</option>
+                    <option value="Sí">Sí</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="motivo">Motivo del Uso de Insumos:</label>
+                <textarea id="motivo" rows="3" placeholder="Describa el motivo..."></textarea>
+            </div>
+            
+            <button type="submit">Enviar Registro</button>
+        </form>
+        
+        <div id="notification" class="notification"></div>
+        
+        <footer>
+            <p>Sistema de Registro Vehicular &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lista de personal (puedes reemplazar con tus datos reales)
+            const personal = [
+                "Stefano_Alvarez",
+                "Juan_Perez",
+                "Maria_Gonzalez",
+                "Carlos_Rodriguez",
+                "Laura_Martinez",
+                "Pedro_Sanchez"
+            ];
+            
+            const selectNombre = document.getElementById('nombre');
+            
+            // Llenar el dropdown con los nombres del personal
+            personal.forEach(persona => {
+                const option = document.createElement('option');
+                option.value = persona;
+                option.textContent = persona;
+                selectNombre.appendChild(option);
+            });
+            
+            // Establecer fecha y hora actual por defecto
+            const now = new Date();
+            document.getElementById('fecha').value = now.toISOString().split('T')[0];
+            document.getElementById('hora').value = now.toTimeString().substring(0, 5);
+            
+            // Manejar el envío del formulario
+            document.getElementById('vehicleForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const nombre = document.getElementById('nombre').value;
+                const unidad = document.getElementById('unidad').value;
+                const fecha = document.getElementById('fecha').value;
+                const hora = document.getElementById('hora').value;
+                const usoInsumos = document.getElementById('usoInsumos').value;
+                const motivo = document.getElementById('motivo').value;
+                
+                // Formatear la fecha en formato dd/mm/aaaa
+                const fechaParts = fecha.split('-');
+                const fechaFormateada = `${fechaParts[2]}/${fechaParts[1]}/${fechaParts[0]}`;
+                
+                // Crear el mensaje con formato similar a la imagen
+                const mensaje = `
+**NOMBRE:** ${nombre}  
+**UNIDAD:** ${unidad}  
+**FECHA/HORA:** ${hora} - ${fechaFormateada}  
+**USO DE INSUMOS:** ${usoInsumos}  
+**MOTIVO DEL USO DE INSUMOS:** ${motivo || 'N/A'}
+                `;
+                
+                try {
+                    // Aquí debes reemplazar con tu URL de webhook de Discord
+                    const webhookURL = 'https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX';
+                    
+                    const response = await fetch(webhookURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            content: mensaje,
+                            username: 'Registro Vehicular',
+                            avatar_url: 'https://example.com/avatar.png' // Opcional
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        showNotification('Registro enviado exitosamente a Discord', 'success');
+                        document.getElementById('vehicleForm').reset();
+                        // Restablecer fecha y hora
+                        const now = new Date();
+                        document.getElementById('fecha').value = now.toISOString().split('T')[0];
+                        document.getElementById('hora').value = now.toTimeString().substring(0, 5);
+                    } else {
+                        showNotification('Error al enviar el registro: ' + response.statusText, 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error de conexión: ' + error.message, 'error');
+                }
+            });
+            
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = 'notification ' + type;
+                notification.style.display = 'block';
+                
+                // Ocultar notificación después de 5 segundos
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
