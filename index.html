@@ -113,8 +113,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 220px; /* Altura mínima aumentada */
-            justify-content: center;
         }
         
         .menu-option:hover {
@@ -135,24 +133,11 @@
             font-size: 1.4rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            line-height: 1.3; /* Mejor espaciado entre líneas */
         }
         
         .menu-option p {
             color: var(--military-light);
-            font-size: 0.95rem; /* Tamaño de fuente ligeramente reducido */
-            line-height: 1.4; /* Mejor espaciado entre líneas */
-            max-width: 100%; /* Asegura que no se desborde */
-        }
-        
-        /* Ajustes específicos para la opción de Informes/Suministros */
-        .menu-option[data-target="informes-suministros"] h2 {
-            font-size: 1.3rem; /* Tamaño ligeramente más pequeño para el título */
-            margin-bottom: 8px;
-        }
-        
-        .menu-option[data-target="informes-suministros"] p {
-            font-size: 0.9rem; /* Tamaño más pequeño para el párrafo */
+            font-size: 0.9rem;
         }
         
         .submenu {
@@ -171,10 +156,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
         
         .submenu-option:hover {
@@ -185,12 +166,6 @@
         .submenu-option h2 {
             color: var(--military-tan);
             margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-        
-        .submenu-option p {
-            color: var(--military-white);
-            font-size: 0.9rem;
         }
         
         .form-container {
@@ -329,19 +304,6 @@
             .back-button, button[type="submit"] {
                 width: 100%;
             }
-            
-            .menu-option {
-                min-height: 180px; /* Altura reducida en móviles */
-                padding: 20px 15px;
-            }
-            
-            .menu-option h2 {
-                font-size: 1.2rem;
-            }
-            
-            .menu-option p {
-                font-size: 0.85rem;
-            }
         }
         
         .camo-pattern {
@@ -463,7 +425,183 @@
             </form>
         </div>
         
-        <!-- Resto de formularios (se mantienen igual que en el código anterior) -->
+        <!-- Formulario de Aduanas -->
+        <div class="form-container" id="form-aduanas">
+            <div class="form-header">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+                <h2>Informe de Aduanas</h2>
+            </div>
+            <form id="aduanas-form">
+                <div class="form-group">
+                    <label for="aduanas-miembro-mando">Miembro al Mando (Rango y Apellido):</label>
+                    <select id="aduanas-miembro-mando" required>
+                        <option value="">Seleccione un miembro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="aduanas-miembros">Miembros Implicados:</label>
+                    <textarea id="aduanas-miembros" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="aduanas-unidades">Unidades Utilizadas:</label>
+                    <input type="text" id="aduanas-unidades" required>
+                </div>
+                <div class="form-group">
+                    <label for="aduanas-hora-inicio">Hora de Inicio:</label>
+                    <input type="text" id="aduanas-hora-inicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="aduanas-hora-fin">Hora de Finalización:</label>
+                    <input type="text" id="aduanas-hora-fin" required>
+                </div>
+                <div class="form-group">
+                    <label for="aduanas-observaciones">Observaciones:</label>
+                    <textarea id="aduanas-observaciones"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="back-button">Volver al Menú</button>
+                    <button type="submit">Enviar Informe</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Formulario de Entrega de Suministros -->
+        <div class="form-container" id="form-entrega-suministros">
+            <div class="form-header">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+                <h2>Entrega de Suministros</h2>
+            </div>
+            <form id="entrega-suministros-form">
+                <div class="form-group">
+                    <label for="suministros-miembro-mando">Miembro al Mando (Rango y Apellido):</label>
+                    <select id="suministros-miembro-mando" required>
+                        <option value="">Seleccione un miembro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="suministros-miembros">Miembros Implicados:</label>
+                    <textarea id="suministros-miembros" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="suministros-unidades">Unidades Utilizadas:</label>
+                    <input type="text" id="suministros-unidades" required>
+                </div>
+                <div class="form-group">
+                    <label for="suministros-hora-inicio">Hora de Inicio:</label>
+                    <input type="text" id="suministros-hora-inicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="suministros-hora-fin">Hora de Finalización:</label>
+                    <input type="text" id="suministros-hora-fin" required>
+                </div>
+                <div class="form-group">
+                    <label for="suministros-observaciones">Observaciones:</label>
+                    <textarea id="suministros-observaciones"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="back-button">Volver al Menú</button>
+                    <button type="submit">Enviar Informe</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Formulario de Libro de Guardia -->
+        <div class="form-container" id="form-libro-guardia">
+            <div class="form-header">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+                <h2>Libro de Guardia</h2>
+            </div>
+            <form id="libro-guardia-form">
+                <div class="form-group">
+                    <label for="libro-rango-nombre">Rango y nombre:</label>
+                    <select id="libro-rango-nombre" required>
+                        <option value="">Seleccione un miembro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="libro-hora-inicio">Hora de inicio:</label>
+                    <input type="text" id="libro-hora-inicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="libro-hora-fin">Hora de fin:</label>
+                    <input type="text" id="libro-hora-fin" required>
+                </div>
+                <div class="form-group">
+                    <label for="libro-observaciones">Observaciones:</label>
+                    <textarea id="libro-observaciones"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="back-button">Volver al Menú</button>
+                    <button type="submit">Registrar</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Formulario de Registro de Entradas y Salidas -->
+        <div class="form-container" id="form-entradas-salidas">
+            <div class="form-header">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+                <h2>Registro de Entradas y Salidas</h2>
+            </div>
+            <form id="entradas-salidas-form">
+                <div class="form-group">
+                    <label for="registro-hora">Hora:</label>
+                    <input type="text" id="registro-hora" required>
+                </div>
+                <div class="form-group">
+                    <label for="registro-placa">Placa del vehículo:</label>
+                    <input type="text" id="registro-placa" required>
+                </div>
+                <div class="form-group">
+                    <label for="registro-nombre">Nombre de la persona:</label>
+                    <input type="text" id="registro-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="registro-motivo">Motivo de ingreso/salida:</label>
+                    <textarea id="registro-motivo" required></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="back-button">Volver al Menú</button>
+                    <button type="submit">Registrar</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Formulario de Registro de Unidades -->
+        <div class="form-container" id="form-registro-unidades">
+            <div class="form-header">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+                <h2>Registro de Unidades</h2>
+            </div>
+            <form id="registro-unidades-form">
+                <div class="form-group">
+                    <label for="unidades-nombre">NOMBRE:</label>
+                    <select id="unidades-nombre" required>
+                        <option value="">Seleccione un miembro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="unidades-unidad">UNIDAD:</label>
+                    <input type="text" id="unidades-unidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="unidades-fecha-hora">FECHA/HORA:</label>
+                    <input type="text" id="unidades-fecha-hora" required>
+                </div>
+                <div class="form-group">
+                    <label for="unidades-insumos">USO DE INSUMOS:</label>
+                    <input type="text" id="unidades-insumos" required>
+                </div>
+                <div class="form-group">
+                    <label for="unidades-motivo">MOTIVO DEL USO DE INSUMOS:</label>
+                    <textarea id="unidades-motivo" required></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="back-button">Volver al Menú</button>
+                    <button type="submit">Registrar</button>
+                </div>
+            </form>
+        </div>
         
         <div class="notification" id="notification"></div>
     </div>
@@ -495,7 +633,7 @@
             informes: "INFORMES",
             aduanas: "ADUANAS",
             entrega_suministros: "ENTREGA DE SUMINISTROS",
-            libro_guardia: "LIBRO DE GUARDIA",
+            libro_guardia: "LIBRO_GUARDIA",
             entradas_salidas: "ENTRADAS/SALIDAS",
             registro_unidades: "REGISTRO DE UNIDADES"
         };
