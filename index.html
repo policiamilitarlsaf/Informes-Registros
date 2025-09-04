@@ -676,40 +676,43 @@
         };
 
         
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
+// Agregar evento al botón de login - CORRECCIÓN IMPORTANTE
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            // Redirigir a la ruta correcta de Vercel
+            window.location.href = '/api/auth';
+        });
 
-// Verificar parámetros de error en la URL
-const urlParams = new URLSearchParams(window.location.search);
-const error = urlParams.get('error');
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
 
-if (error) {
-  // Mostrar mensaje de error si existe
-  alert('Error de autenticación: ' + decodeURIComponent(error));
-  // Limpiar el parámetro de error de la URL
-  window.history.replaceState({}, document.title, window.location.pathname);
-}
+        // Verificar parámetros de error en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
 
-// Debug: Mostrar todas las cookies
-console.log('Cookies actuales:', document.cookie);
+        if (error) {
+            // Mostrar mensaje de error si existe
+            document.getElementById('errorMsg').textContent = decodeURIComponent(error);
+            document.getElementById('errorMsg').style.display = 'block';
+            // Limpiar el parámetro de error de la URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
 
-// Esperar un momento para asegurar que la cookie se haya establecido
-setTimeout(() => {
-  const hasAuthCookie = getCookie('userAuth');
-  console.log('¿Tiene cookie de autenticación?', hasAuthCookie);
-  
-  // Solo redirigir si no tiene la cookie Y no está en la página de login
-  if (!hasAuthCookie && !window.location.href.includes('login.html')) {
-    console.log('No autenticado, redirigiendo a login');
-    window.location.href = '/login.html';
-  } else if (hasAuthCookie) {
-    console.log('Usuario autenticado correctamente');
-  }
-}, 100);
+        // Debug: Mostrar todas las cookies
+        console.log('Cookies actuales:', document.cookie);
+
+        // Verificar autenticación
+        const hasAuthCookie = getCookie('userAuth');
+        console.log('¿Tiene cookie de autenticación?', hasAuthCookie);
+        
+        // Si ya está autenticado, redirigir al index
+        if (hasAuthCookie && !window.location.href.includes('index.html')) {
+            console.log('Usuario autenticado, redirigiendo a index');
+            window.location.href = '/index.html';
+        }
 
 
 // Función para formatear la fecha y hora en español
