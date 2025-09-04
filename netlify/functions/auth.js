@@ -8,8 +8,11 @@ const SERVER_ID = '390267426157101064';
 const ALLOWED_ROLE_ID = '754043321349046435';
 
 exports.handler = async (event) => {
+  console.log('Solicitud recibida:', event.path);
+  
   // Ruta principal - redirige a Discord OAuth
   if (event.path.endsWith('/auth')) {
+    console.log('Redirigiendo a Discord OAuth');
     return {
       statusCode: 302,
       headers: {
@@ -20,9 +23,11 @@ exports.handler = async (event) => {
   
   // Callback de OAuth
   if (event.path.endsWith('/auth/callback')) {
+    console.log('Procesando callback de OAuth');
     const code = event.queryStringParameters.code;
     
     if (!code) {
+      console.error('No se proporcionó código de autorización');
       return {
         statusCode: 302,
         headers: {
@@ -32,6 +37,7 @@ exports.handler = async (event) => {
     }
     
     try {
+      console.log('Intercambiando código por token');
       // Intercambiar código por token de acceso
       const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
         method: 'POST',
@@ -49,6 +55,7 @@ exports.handler = async (event) => {
       });
       
       const tokenData = await tokenResponse.json();
+      console.log('Respuesta de token:', tokenData);
       
       if (!tokenResponse.ok) {
         console.error('Error al obtener token:', tokenData);
@@ -56,6 +63,7 @@ exports.handler = async (event) => {
       }
       
       // Obtener información del usuario
+      console.log('Obteniendo información del usuario');
       const userResponse = await fetch('https://discord.com/api/users/@me', {
         headers: {
           Authorization: `Bearer ${tokenData.access_token}`,
@@ -63,12 +71,16 @@ exports.handler = async (event) => {
       });
       
       if (!userResponse.ok) {
+        const errorText = await userResponse.text();
+        console.error('Error al obtener información del usuario:', errorText);
         throw new Error('Error al obtener información del usuario');
       }
       
       const userData = await userResponse.json();
+      console.log('Datos del usuario:', userData);
       
       // Obtener información de membresía del servidor
+      console.log('Verificando membresía del servidor');
       const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/${SERVER_ID}/member`, {
         headers: {
           Authorization: `Bearer ${tokenData.access_token}`,
@@ -77,6 +89,7 @@ exports.handler = async (event) => {
       
       // Si el usuario no está en el servidor
       if (memberResponse.status === 404) {
+        console.error('Usuario no encontrado en el servidor');
         return {
           statusCode: 302,
           headers: {
@@ -86,25 +99,32 @@ exports.handler = async (event) => {
       }
       
       if (!memberResponse.ok) {
-        console.error('Error en la respuesta del servidor:', await memberResponse.text());
+        const errorText = await memberResponse.text();
+        console.error('Error al verificar membresía:', errorText);
         throw new Error('Error al verificar membresía del servidor');
       }
       
       const memberData = await memberResponse.json();
-      console.log('Datos del miembro:', JSON.stringify(memberData, null, 2));
+      console.log('Datos de membresía:', memberData);
+      console.log('Roles del usuario:', memberData.roles);
+      console.log('Rol requerido:', ALLOWED_ROLE_ID);
       
       // Verificar si el usuario tiene el rol requerido
-      if (!memberData.roles || !memberData.roles.includes(ALLOWED_ROLE_ID)) {
-        console.log('Usuario no tiene el rol requerido. Roles que tiene:', memberData.roles);
+      const hasRequiredRole = memberData.roles && memberData.roles.includes(ALLOWED_ROLE_ID);
+      console.log('¿Tiene el rol requerido?', hasRequiredRole);
+      
+      if (!hasRequiredRole) {
+        console.error('Usuario no tiene el rol requerido');
         return {
           statusCode: 302,
           headers: {
-            Location: `/login.html?error=${encodeURIComponent('No tienes el rol requerido para acceder')}`
+            Location: `/login.html?error=${encodeURIComponent('No tienes el rol requerido para acceder. Contacta al administrador.')}`
           }
         };
       }
       
       // Si todo está bien, redirigir al index.html
+      console.log('Autenticación exitosa, redirigiendo a index.html');
       return {
         statusCode: 302,
         headers: {
@@ -124,6 +144,7 @@ exports.handler = async (event) => {
     }
   }
   
+  console.error('Ruta no encontrada:', event.path);
   return {
     statusCode: 404,
     body: 'Ruta no encontrada'
