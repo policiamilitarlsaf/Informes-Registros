@@ -5,33 +5,32 @@ const REDIRECT_URI = 'https://informes-registros.vercel.app/api/auth/callback';
 const SERVER_ID = '390267426157101064';
 const ALLOWED_ROLE_ID = '754043321349046435';
 
-exports.handler = async (event) => {
-  console.log('Solicitud recibida:', event.path);
+export default async function handler(request, response) {
+  const { pathname } = new URL(request.url, `https://${request.headers.host}`);
+  
+  console.log('Solicitud recibida:', pathname);
   
   // Ruta principal - redirige a Discord OAuth
-  if (event.path.endsWith('/auth')) {
+  if (pathname.endsWith('/auth')) {
     console.log('Redirigiendo a Discord OAuth');
-    return {
-      statusCode: 302,
-      headers: {
-        Location: `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds%20guilds.members.read`
-      }
-    };
+    return Response.redirect(
+      `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds%20guilds.members.read`,
+      302
+    );
   }
   
   // Callback de OAuth
-  if (event.path.endsWith('/auth/callback')) {
+  if (pathname.endsWith('/auth/callback')) {
     console.log('Procesando callback de OAuth');
-    const code = event.queryStringParameters.code;
+    const { searchParams } = new URL(request.url, `https://${request.headers.host}`);
+    const code = searchParams.get('code');
     
     if (!code) {
       console.error('No se proporcionó código de autorización');
-      return {
-        statusCode: 302,
-        headers: {
-          Location: `/login.html?error=${encodeURIComponent('Código de autorización no proporcionado')}`
-        }
-      };
+      return Response.redirect(
+        `/login.html?error=${encodeURIComponent('Código de autorización no proporcionado')}`,
+        302
+      );
     }
     
     try {
@@ -88,12 +87,10 @@ exports.handler = async (event) => {
       // Si el usuario no está en el servidor
       if (memberResponse.status === 404) {
         console.error('Usuario no encontrado en el servidor');
-        return {
-          statusCode: 302,
-          headers: {
-            Location: `/login.html?error=${encodeURIComponent('No estás en el servidor requerido')}`
-          }
-        };
+        return Response.redirect(
+          `/login.html?error=${encodeURIComponent('No estás en el servidor requerido')}`,
+          302
+        );
       }
       
       if (!memberResponse.ok) {
@@ -113,38 +110,27 @@ exports.handler = async (event) => {
       
       if (!hasRequiredRole) {
         console.error('Usuario no tiene el rol requerido');
-        return {
-          statusCode: 302,
-          headers: {
-            Location: `/login.html?error=${encodeURIComponent('No eres miembro de la LSAF. Para acceder al sistema debes ser un miembro activo. Mantente pendiente del canal de reclutamiento para más información.')}`
-          }
-        };
+        return Response.redirect(
+          `/login.html?error=${encodeURIComponent('No eres miembro de la LSAF. Para acceder al sistema debes ser un miembro activo. Mantente pendiente del canal de reclutamiento para más información.')}`,
+          302
+        );
       }
       
       // Si todo está bien, redirigir al index.html
       console.log('Autenticación exitosa, redirigiendo a index.html');
-      return {
-        statusCode: 302,
-        headers: {
-          Location: '/index.html',
-          'Set-Cookie': 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600'
-        }
-      };
+      const response = Response.redirect('/index.html', 302);
+      response.headers.append('Set-Cookie', 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600');
+      return response;
       
     } catch (error) {
       console.error('Error en autenticación:', error);
-      return {
-        statusCode: 302,
-        headers: {
-          Location: `/login.html?error=${encodeURIComponent('Error en el proceso de autenticación: ' + error.message)}`
-        }
-      };
+      return Response.redirect(
+        `/login.html?error=${encodeURIComponent('Error en el proceso de autenticación: ' + error.message)}`,
+        302
+      );
     }
   }
   
-  console.error('Ruta no encontrada:', event.path);
-  return {
-    statusCode: 404,
-    body: 'Ruta no encontrada'
-  };
-};
+  console.error('Ruta no encontrada:', pathname);
+  return new Response('Ruta no encontrada', { status: 404 });
+}
