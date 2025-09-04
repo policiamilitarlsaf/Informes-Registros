@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación - Sistema LSAF</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            margin-top: 0;
+            color: #fdbb2d;
+        }
+        .btn-login {
+            background: #5865F2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        .btn-login:hover {
+            background: #4752c4;
+        }
+        .error {
+            background: #ff3860;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord Logo" class="logo">
+        <h1>Sistema de Registros LSAF</h1>
+        <p>Para acceder al sistema, debes tener el rol requerido en el servidor de Discord.</p>
+        <button class="btn-login" id="loginBtn">Iniciar sesión con Discord</button>
+        <div class="error" id="errorMsg"></div>
+    </div>
+
+    <script>
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            // Redirigir a la función de autenticación de Netlify
+            window.location.href = '/.netlify/functions/auth';
+        });
+
+        // Verificar si hay un mensaje de error en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            document.getElementById('errorMsg').textContent = decodeURIComponent(error);
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
