@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 // Configuración
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const REDIRECT_URI = 'https://frabjous-cannoli-0a5d2e.netlify.app/.netlify/functions/auth/callback';
+const REDIRECT_URI = 'https://informes-registros.vercel.app/api/auth/callback';
 const SERVER_ID = '390267426157101064';
 const ALLOWED_ROLE_ID = '754043321349046435';
 
@@ -150,5 +150,6 @@ exports.handler = async (event) => {
     body: 'Ruta no encontrada'
   };
 };
+
 
 
