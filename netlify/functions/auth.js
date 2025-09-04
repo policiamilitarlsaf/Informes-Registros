@@ -118,9 +118,7 @@ exports.handler = async (event) => {
         return {
           statusCode: 302,
           headers: {
-            Location: `/login.html?error=${encodeURIComponent('No eres miembro de la LSAF.  
-Para acceder al sistema debes ser un miembro activo.  
-Mantente pendiente del canal de reclutamiento para más información..')}`
+            Location: `/login.html?error=${encodeURIComponent('No tienes el rol requerido para acceder. Contacta al administrador.')}`
           }
         };
       }
