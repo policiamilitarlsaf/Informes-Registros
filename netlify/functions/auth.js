@@ -129,7 +129,7 @@ exports.handler = async (event) => {
         statusCode: 302,
         headers: {
           Location: '/index.html',
-          'Set-Cookie': `userAuth=true; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=3600`
+          'Set-Cookie': `userAuth=true; Path=/; Domain=frabjous-cannoli-0a5d2e.netlify.app; Secure; SameSite=None; Max-Age=3600`
         }
       };
       
