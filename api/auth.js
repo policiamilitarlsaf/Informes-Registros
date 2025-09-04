@@ -1,37 +1,30 @@
 // auth.js - Código corregido para Vercel
-export default async function handler(req, res) {
-  const { pathname } = new URL(req.url, `https://${req.headers.host}`);
-  
+const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const REDIRECT_URI = 'https://informes-registros.vercel.app/api/auth/callback';
+const SERVER_ID = '390267426157101064';
+const ALLOWED_ROLE_ID = '754043321349046435';
+
+export default async function handler(request, response) {
+  const url = new URL(request.url, `https://${request.headers.host}`);
+  const pathname = url.pathname;
+
   console.log('Solicitud recibida:', pathname);
   
   // Ruta principal - redirige a Discord OAuth
   if (pathname === '/api/auth') {
     console.log('Redirigiendo a Discord OAuth');
-    
-    const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-    const REDIRECT_URI = 'https://informes-registros.vercel.app/api/auth/callback';
-    
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds%20guilds.members.read`;
-    
-    return res.redirect(discordAuthUrl);
+    return response.redirect(302, `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds%20guilds.members.read`);
   }
   
   // Callback de OAuth
   if (pathname === '/api/auth/callback') {
     console.log('Procesando callback de OAuth');
-    
-    const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-    const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-    const REDIRECT_URI = 'https://informes-registros.vercel.app/api/auth/callback';
-    const SERVER_ID = '390267426157101064';
-    const ALLOWED_ROLE_ID = '754043321349046435';
-    
-    const { searchParams } = new URL(req.url, `https://${req.headers.host}`);
-    const code = searchParams.get('code');
+    const code = url.searchParams.get('code');
     
     if (!code) {
       console.error('No se proporcionó código de autorización');
-      return res.redirect('/login.html?error=' + encodeURIComponent('Código de autorización no proporcionado'));
+      return response.redirect(302, `/login.html?error=${encodeURIComponent('Código de autorización no proporcionado')}`);
     }
     
     try {
@@ -88,7 +81,7 @@ export default async function handler(req, res) {
       // Si el usuario no está en el servidor
       if (memberResponse.status === 404) {
         console.error('Usuario no encontrado en el servidor');
-        return res.redirect('/login.html?error=' + encodeURIComponent('No estás en el servidor requerido'));
+        return response.redirect(302, `/login.html?error=${encodeURIComponent('No estás en el servidor requerido')}`);
       }
       
       if (!memberResponse.ok) {
@@ -108,20 +101,20 @@ export default async function handler(req, res) {
       
       if (!hasRequiredRole) {
         console.error('Usuario no tiene el rol requerido');
-        return res.redirect('/login.html?error=' + encodeURIComponent('No eres miembro de la LSAF. Para acceder al sistema debes ser un miembro activo. Mantente pendiente del canal de reclutamiento para más información.'));
+        return response.redirect(302, `/login.html?error=${encodeURIComponent('No tienes el rol requerido para acceder. Contacta al administrador.')}`);
       }
       
       // Si todo está bien, redirigir al index.html
       console.log('Autenticación exitosa, redirigiendo a index.html');
-      res.setHeader('Set-Cookie', 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600');
-      return res.redirect('/index.html');
+      response.setHeader('Set-Cookie', 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600');
+      return response.redirect(302, '/index.html');
       
     } catch (error) {
       console.error('Error en autenticación:', error);
-      return res.redirect('/login.html?error=' + encodeURIComponent('Error en el proceso de autenticación: ' + error.message));
+      return response.redirect(302, `/login.html?error=${encodeURIComponent('Error en el proceso de autenticación: ' + error.message)}`);
     }
   }
   
   console.error('Ruta no encontrada:', pathname);
-  return res.status(404).json({ error: 'Ruta no encontrada' });
+  return response.status(404).json({ error: 'Ruta no encontrada' });
 }
