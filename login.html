@@ -67,8 +67,8 @@
 
     <script>
         document.getElementById('loginBtn').addEventListener('click', () => {
-            // Redirigir a la función de autenticación de Netlify
-            window.location.href = '/.netlify/functions/auth';
+            // CORRECCIÓN: Redirigir a la función de autenticación de Vercel (no de Netlify)
+            window.location.href = '/api/auth';
         });
 
         // Verificar si hay un mensaje de error en la URL
@@ -77,6 +77,19 @@
         if (error) {
             document.getElementById('errorMsg').textContent = decodeURIComponent(error);
             document.getElementById('errorMsg').style.display = 'block';
+        }
+
+        // Verificar si ya está autenticado y redirigir a index.html
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        const hasAuthCookie = getCookie('userAuth');
+        if (hasAuthCookie && !window.location.href.includes('index.html')) {
+            window.location.href = '/index.html';
         }
     </script>
 </body>
