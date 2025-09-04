@@ -1,0 +1,4 @@
+# Redirigir todas las rutas a login.html excepto las funciones de Netlify
+/* /.netlify/functions/verify 200
+/.netlify/functions/* /.netlify/functions/:splat 200
+/login.html /login.html 200
