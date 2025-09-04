@@ -4,8 +4,7 @@ exports.handler = async (event) => {
   // Permitir acceso directo a login.html y a las funciones de Netlify
   if (path === '/login.html' || path.includes('/.netlify/')) {
     return {
-      statusCode: 200,
-      body: 'OK'
+      statusCode: 200
     };
   }
   
@@ -22,9 +21,8 @@ exports.handler = async (event) => {
     };
   }
   
-  // Si está autenticado, permitir acceso al index.html
+  // Si está autenticado, permitir acceso al contenido estático
   return {
-    statusCode: 200,
-    body: 'OK'
+    statusCode: 200
   };
 };
