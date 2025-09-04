@@ -1,9 +1,10 @@
 const fetch = require('node-fetch');
 
-// Configuración
+// Configuración usando variables de entorno
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const REDIRECT_URI = 'https://frabjous-cannoli-0a5d2e.netlify.app/.netlify/functions/auth/callback';
+const SITE_URL = process.env.SITE_URL || 'https://frabjous-cannoli-0a5d2e.netlify.app';
+const REDIRECT_URI = `${SITE_URL}/.netlify/functions/auth/callback`;
 const SERVER_ID = '390267426157101064';
 const ALLOWED_ROLE_ID = '754043321349046435';
 
@@ -115,12 +116,11 @@ exports.handler = async (event) => {
       
       if (!hasRequiredRole) {
         console.error('Usuario no tiene el rol requerido');
+        const errorMessage = 'No eres miembro de la LSAF. Para acceder al sistema debes ser un miembro activo. Mantente pendiente del canal de reclutamiento para más información.';
         return {
           statusCode: 302,
           headers: {
-            Location: `/login.html?error=${encodeURIComponent('No eres miembro de la LSAF.  
-Para acceder al sistema debes ser un miembro activo.  
-Mantente pendiente del canal de reclutamiento para más información..')}`
+            Location: `/login.html?error=${encodeURIComponent(errorMessage)}`
           }
         };
       }
@@ -131,7 +131,7 @@ Mantente pendiente del canal de reclutamiento para más información..')}`
         statusCode: 302,
         headers: {
           Location: '/index.html',
-          'Set-Cookie': `userAuth=true; Path=/; Domain=frabjous-cannoli-0a5d2e.netlify.app; Secure; SameSite=None; Max-Age=3600`
+          'Set-Cookie': `userAuth=true; Path=/; Domain=.netlify.app; Secure; SameSite=None; Max-Age=3600`
         }
       };
       
@@ -152,4 +152,3 @@ Mantente pendiente del canal de reclutamiento para más información..')}`
     body: 'Ruta no encontrada'
   };
 };
-
