@@ -694,13 +694,23 @@ if (error) {
   window.history.replaceState({}, document.title, window.location.pathname);
 }
 
-// Si no tiene la cookie de autenticación, redirigir a login
-if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
-  console.log('No autenticado, redirigiendo a login');
-  window.location.href = '/login.html';
-} else {
-  console.log('Usuario autenticado');
-}
+// Debug: Mostrar todas las cookies
+console.log('Cookies actuales:', document.cookie);
+
+// Esperar un momento para asegurar que la cookie se haya establecido
+setTimeout(() => {
+  const hasAuthCookie = getCookie('userAuth');
+  console.log('¿Tiene cookie de autenticación?', hasAuthCookie);
+  
+  // Solo redirigir si no tiene la cookie Y no está en la página de login
+  if (!hasAuthCookie && !window.location.href.includes('login.html')) {
+    console.log('No autenticado, redirigiendo a login');
+    window.location.href = '/login.html';
+  } else if (hasAuthCookie) {
+    console.log('Usuario autenticado correctamente');
+  }
+}, 100);
+
 
 // Función para formatear la fecha y hora en español
         function formatDateTime() {
