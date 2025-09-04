@@ -129,7 +129,8 @@ exports.handler = async (event) => {
         statusCode: 302,
         headers: {
           Location: '/index.html',
-          'Set-Cookie': `userAuth=true; Path=/; Domain=frabjous-cannoli-0a5d2e.netlify.app; Secure; SameSite=None; Max-Age=3600`
+          // CORRECCIÓN IMPORTANTE: Cookie sin dominio específico para Vercel
+          'Set-Cookie': 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600'
         }
       };
       
@@ -150,6 +151,3 @@ exports.handler = async (event) => {
     body: 'Ruta no encontrada'
   };
 };
-
-
-
