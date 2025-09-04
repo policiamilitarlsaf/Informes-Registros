@@ -1,16 +1,13 @@
 const fetch = require('node-fetch');
 
-// Configuración - Reemplaza con tus valores
+// Configuración
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
 const REDIRECT_URI = 'https://frabjous-cannoli-0a5d2e.netlify.app/.netlify/functions/auth/callback';
-const SERVER_ID = '390267426157101064'; // Reemplaza con el ID del servidor
-const ALLOWED_ROLE_ID = '754043321349046435'; // Reemplaza con el ID del rol requerido
+const SERVER_ID = '390267426157101064';
+const ALLOWED_ROLE_ID = '754043321349046435';
 
 exports.handler = async (event) => {
-  const path = event.path.replace(/\/\.netlify\/functions\/[^/]*\//, '');
-  const parts = path.split('/');
-  
   // Ruta principal - redirige a Discord OAuth
   if (event.path.endsWith('/auth')) {
     return {
@@ -54,6 +51,7 @@ exports.handler = async (event) => {
       const tokenData = await tokenResponse.json();
       
       if (!tokenResponse.ok) {
+        console.error('Error al obtener token:', tokenData);
         throw new Error(tokenData.error_description || 'Error al obtener token');
       }
       
@@ -64,11 +62,11 @@ exports.handler = async (event) => {
         },
       });
       
-      const userData = await userResponse.json();
-      
       if (!userResponse.ok) {
         throw new Error('Error al obtener información del usuario');
       }
+      
+      const userData = await userResponse.json();
       
       // Obtener información de membresía del servidor
       const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/${SERVER_ID}/member`, {
@@ -88,13 +86,16 @@ exports.handler = async (event) => {
       }
       
       if (!memberResponse.ok) {
+        console.error('Error en la respuesta del servidor:', await memberResponse.text());
         throw new Error('Error al verificar membresía del servidor');
       }
       
       const memberData = await memberResponse.json();
+      console.log('Datos del miembro:', JSON.stringify(memberData, null, 2));
       
       // Verificar si el usuario tiene el rol requerido
       if (!memberData.roles || !memberData.roles.includes(ALLOWED_ROLE_ID)) {
+        console.log('Usuario no tiene el rol requerido. Roles que tiene:', memberData.roles);
         return {
           statusCode: 302,
           headers: {
@@ -104,12 +105,11 @@ exports.handler = async (event) => {
       }
       
       // Si todo está bien, redirigir al index.html
-      // Podrías establecer una cookie o usar otro método para mantener la sesión
       return {
         statusCode: 302,
         headers: {
           Location: '/index.html',
-          'Set-Cookie': `userAuth=true; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600`
+          'Set-Cookie': `userAuth=true; Path=/; HttpOnly; SameSite=None; Secure; Max-Age=3600`
         }
       };
       
@@ -118,7 +118,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 302,
         headers: {
-          Location: `/login.html?error=${encodeURIComponent('Error en el proceso de autenticación')}`
+          Location: `/login.html?error=${encodeURIComponent('Error en el proceso de autenticación: ' + error.message)}`
         }
       };
     }
@@ -128,5 +128,4 @@ exports.handler = async (event) => {
     statusCode: 404,
     body: 'Ruta no encontrada'
   };
-
 };
