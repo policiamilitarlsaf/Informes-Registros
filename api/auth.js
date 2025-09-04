@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 // Configuración
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
@@ -129,7 +127,6 @@ exports.handler = async (event) => {
         statusCode: 302,
         headers: {
           Location: '/index.html',
-          // CORRECCIÓN IMPORTANTE: Cookie sin dominio específico para Vercel
           'Set-Cookie': 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600'
         }
       };
