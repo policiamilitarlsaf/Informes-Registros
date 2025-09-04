@@ -1,5 +1,15 @@
 exports.handler = async (event) => {
-  // Verificar la cookie de autenticación
+  const path = event.path;
+  
+  // Permitir acceso directo a login.html y a las funciones de Netlify
+  if (path === '/login.html' || path.includes('/.netlify/')) {
+    return {
+      statusCode: 200,
+      body: 'OK'
+    };
+  }
+  
+  // Verificar si el usuario tiene la cookie de autenticación
   const cookies = event.headers.cookie || '';
   const isAuthenticated = cookies.includes('userAuth=true');
   
@@ -12,8 +22,9 @@ exports.handler = async (event) => {
     };
   }
   
+  // Si está autenticado, permitir acceso al index.html
   return {
     statusCode: 200,
-    body: 'Autorizado'
+    body: 'OK'
   };
 };
