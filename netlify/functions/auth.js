@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 // Configuración - Reemplaza con tus valores
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const REDIRECT_URI = process.env.SITE_URL + '/.netlify/functions/auth/callback';
+const REDIRECT_URI = 'https://frabjous-cannoli-0a5d2e.netlify.app/.netlify/functions/auth/callback';
 const SERVER_ID = '390267426157101064'; // Reemplaza con el ID del servidor
 const ALLOWED_ROLE_ID = '754043321349046435'; // Reemplaza con el ID del rol requerido
 
@@ -128,4 +128,5 @@ exports.handler = async (event) => {
     statusCode: 404,
     body: 'Ruta no encontrada'
   };
+
 };
