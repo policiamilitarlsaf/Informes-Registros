@@ -13,13 +13,11 @@
   "routes": [
     {
       "src": "/api/auth",
-      "dest": "/api/auth.js",
-      "methods": ["GET"]
+      "dest": "/api/auth.js"
     },
     {
       "src": "/api/auth/callback",
-      "dest": "/api/auth.js",
-      "methods": ["GET"]
+      "dest": "/api/auth.js"
     },
     {
       "src": "/(.*)",
