@@ -67,34 +67,38 @@
 
     <script>
         // Verificar si ya está autenticado
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-}
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
 
-// Configurar el evento del botón de login
-document.getElementById('loginBtn').addEventListener('click', () => {
-    window.location.href = '/api/auth';
-});
+        // Configurar el evento del botón de login
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            window.location.href = '/api/auth';
+        });
 
-// Verificar si hay un mensaje de error en la URL
-const urlParams = new URLSearchParams(window.location.search);
-const error = urlParams.get('error');
-if (error) {
-    document.getElementById('errorMsg').textContent = decodeURIComponent(error);
-    document.getElementById('errorMsg').style.display = 'block';
-}
+        // Verificar si hay un mensaje de error en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            document.getElementById('errorMsg').textContent = decodeURIComponent(error);
+            document.getElementById('errorMsg').style.display = 'block';
+            
+            // Limpiar el parámetro de error de la URL
+            const newUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
 
-// Verificar autenticación al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    const hasAuthCookie = getCookie('userAuth');
-    if (hasAuthCookie) {
-        console.log('Ya autenticado, redirigiendo a index');
-        window.location.href = '/index.html';
-    }
-});
+        // Verificar autenticación al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const hasAuthCookie = getCookie('userAuth');
+            if (hasAuthCookie) {
+                console.log('Ya autenticado, redirigiendo a index');
+                window.location.href = '/index.html';
+            }
+        });
     </script>
 </body>
 </html>
