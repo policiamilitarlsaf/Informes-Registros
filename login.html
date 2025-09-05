@@ -74,8 +74,9 @@
             return null;
         }
 
-        // Configurar el evento del botón de login
+        // Configurar el evento del botón de login - CORRECCIÓN
         document.getElementById('loginBtn').addEventListener('click', () => {
+            // Redirigir a la ruta correcta de Vercel
             window.location.href = '/api/auth';
         });
 
