@@ -361,17 +361,27 @@
 </head>
 <script>
         // Verificar si tenemos la cookie de autenticación
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
 
-        // Si no tiene la cookie de autenticación, redirigir a login
-        if (!getCookie('userAuth')) {
-            window.location.href = '/login.html';
-        }
+// Esperar a que la página cargue completamente
+document.addEventListener('DOMContentLoaded', function() {
+    // Solo redirigir si no estamos en la página de login y no tenemos la cookie
+    if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
+        console.log('No autenticado, redirigiendo a login');
+        window.location.href = '/login.html';
+    }
+    
+    // Si ya estamos autenticados y en login, redirigir a index
+    if (getCookie('userAuth') && window.location.href.includes('login.html')) {
+        console.log('Ya autenticado, redirigiendo a index');
+        window.location.href = '/index.html';
+    }
+});
     </script>
 <body>
     <div class="camo-pattern"></div>
