@@ -1,14 +1,13 @@
-// api/auth.js - Código compatible con Vercel
+// api/auth.js - Código revisado
 const { URL } = require('url');
-const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
   try {
-    // Obtener la URL base
     const baseUrl = `https://${req.headers.host}`;
-    const requestUrl = new URL(req.url, baseUrl);
-    const pathname = requestUrl.pathname;
-    
+    const url = new URL(req.url, baseUrl);
+    const pathname = url.pathname;
+    const searchParams = url.searchParams;
+
     console.log('Solicitud recibida:', pathname);
     
     // Ruta principal - redirige a Discord OAuth
@@ -25,7 +24,7 @@ module.exports = async (req, res) => {
     // Callback de OAuth
     if (pathname === '/api/auth/callback') {
       console.log('Procesando callback de OAuth');
-      const code = requestUrl.searchParams.get('code');
+      const code = searchParams.get('code');
       
       if (!code) {
         console.error('No se proporcionó código de autorización');
