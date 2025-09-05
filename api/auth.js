@@ -1,14 +1,14 @@
-// api/auth.js - Código completo para Vercel
+// api/auth.js - Código compatible con Vercel
 const { URL } = require('url');
+const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
   try {
-    // Crear URL a partir de la solicitud
+    // Obtener la URL base
     const baseUrl = `https://${req.headers.host}`;
-    const url = new URL(req.url, baseUrl);
-    const pathname = url.pathname;
-    const searchParams = url.searchParams;
-
+    const requestUrl = new URL(req.url, baseUrl);
+    const pathname = requestUrl.pathname;
+    
     console.log('Solicitud recibida:', pathname);
     
     // Ruta principal - redirige a Discord OAuth
@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
     // Callback de OAuth
     if (pathname === '/api/auth/callback') {
       console.log('Procesando callback de OAuth');
-      const code = searchParams.get('code');
+      const code = requestUrl.searchParams.get('code');
       
       if (!code) {
         console.error('No se proporcionó código de autorización');
@@ -57,10 +57,8 @@ module.exports = async (req, res) => {
         }
         
         const tokenData = await tokenResponse.json();
-        console.log('Token obtenido correctamente');
         
         // Obtener información del usuario
-        console.log('Obteniendo información del usuario');
         const userResponse = await fetch('https://discord.com/api/users/@me', {
           headers: {
             Authorization: `Bearer ${tokenData.access_token}`,
@@ -68,16 +66,12 @@ module.exports = async (req, res) => {
         });
         
         if (!userResponse.ok) {
-          const errorText = await userResponse.text();
-          console.error('Error al obtener información del usuario:', errorText);
           throw new Error('Error al obtener información del usuario');
         }
         
         const userData = await userResponse.json();
-        console.log('Información del usuario obtenida:', userData.username);
         
         // Obtener información de membresía del servidor
-        console.log('Verificando membresía del servidor');
         const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/390267426157101064/member`, {
           headers: {
             Authorization: `Bearer ${tokenData.access_token}`,
@@ -86,52 +80,44 @@ module.exports = async (req, res) => {
         
         // Si el usuario no está en el servidor
         if (memberResponse.status === 404) {
-          console.error('Usuario no encontrado en el servidor');
           res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('No estás en el servidor requerido') });
           return res.end();
         }
         
         if (!memberResponse.ok) {
-          const errorText = await memberResponse.text();
-          console.error('Error al verificar membresía:', errorText);
           throw new Error('Error al verificar membresía del servidor');
         }
         
         const memberData = await memberResponse.json();
-        console.log('Datos de membresía obtenidos');
         
         // Verificar si el usuario tiene el rol requerido
         const ALLOWED_ROLE_ID = '754043321349046435';
         const hasRequiredRole = memberData.roles && memberData.roles.includes(ALLOWED_ROLE_ID);
-        console.log('¿Tiene el rol requerido?', hasRequiredRole);
         
         if (!hasRequiredRole) {
-          console.error('Usuario no tiene el rol requerido');
           res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('No tienes el rol requerido para acceder. Contacta al administrador.') });
           return res.end();
         }
         
         // Si todo está bien, redirigir al index.html
-        console.log('Autenticación exitosa, redirigiendo a index.html');
         res.setHeader('Set-Cookie', 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600');
         res.writeHead(302, { Location: '/index.html' });
         return res.end();
         
       } catch (error) {
-        console.error('Error en el proceso de autenticación:', error);
-        res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('Error en el proceso de autenticación: ' + error.message) });
+        console.error('Error en autenticación:', error);
+        res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('Error en el proceso de autenticación') });
         return res.end();
       }
     }
     
     // Si no es ninguna de las rutas esperadas
-    console.error('Ruta no encontrada:', pathname);
     res.statusCode = 404;
-    return res.json({ error: 'Ruta no encontrada' });
+    res.json({ error: 'Ruta no encontrada' });
     
   } catch (error) {
     console.error('Error general:', error);
     res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('Error en el servidor') });
-    return res.end();
+    res.end();
   }
 };
