@@ -1,4 +1,4 @@
-// api/auth.js - Código revisado
+// api/auth.js - Código completo y corregido
 const { URL } = require('url');
 
 module.exports = async (req, res) => {
