@@ -1,9 +1,12 @@
-// api/auth.js - Código completo y corregido
 const { URL } = require('url');
 
 module.exports = async (req, res) => {
   try {
-    const baseUrl = `https://${req.headers.host}`;
+    // Obtener el host correctamente para Vercel
+    const host = req.headers.host;
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+    
     const url = new URL(req.url, baseUrl);
     const pathname = url.pathname;
     const searchParams = url.searchParams;
@@ -99,7 +102,7 @@ module.exports = async (req, res) => {
         }
         
         // Si todo está bien, redirigir al index.html
-        res.setHeader('Set-Cookie', 'userAuth=true; Path=/; Secure; SameSite=Lax; Max-Age=3600');
+        res.setHeader('Set-Cookie', 'userAuth=true; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600');
         res.writeHead(302, { Location: '/index.html' });
         return res.end();
         
