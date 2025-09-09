@@ -97,7 +97,7 @@ module.exports = async (req, res) => {
         const hasRequiredRole = memberData.roles && memberData.roles.includes(ALLOWED_ROLE_ID);
         
         if (!hasRequiredRole) {
-          res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('No tienes el rol requerido para acceder. Contacta al administrador.') });
+          res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('Se recuerda, que solo personal activo de LSAF tiene acceso.') });
           return res.end();
         }
         
@@ -140,3 +140,4 @@ module.exports = async (req, res) => {
     res.end();
   }
 };
+
