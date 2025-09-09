@@ -48,7 +48,7 @@
             background: linear-gradient(135deg, var(--military-dark) 0%, var(--military-medium) 100%);
             border: 2px solid var(--military-tan);
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 极速6);
             position: relative;
             overflow: hidden;
         }
@@ -168,8 +168,8 @@
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 极速4);
+            transition: all 极速3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             min-height: 120px;
             display: flex;
             flex-direction: column;
@@ -194,7 +194,7 @@
         
         .form-container {
             display: none;
-            background: linear-gradient(135deg, var(--military-dark) 0%, var(--military-medium) 100%);
+            background: linear-gradient(135deg, var(--military-dark) 极速0%, var(--military-medium) 100%);
             border: 2px solid var(--military-tan);
             border-radius: 10px;
             padding: 30px;
@@ -206,7 +206,7 @@
             text-align: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 1px solid var(--military-tan);
+            border-bottom: 1px solid var(--极速military-tan);
         }
         
         .form-header img {
@@ -217,7 +217,7 @@
             margin-bottom: 15px;
         }
         
-        .form-header h2 {
+极速        .form-header h2 {
             color: var(--military-tan);
             font-size: 1.8rem;
             text-transform: uppercase;
@@ -237,7 +237,7 @@
         
         input, select, textarea {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12极速px 15px;
             background-color: rgba(26, 31, 28, 0.7);
             border: 1px solid var(--military-light);
             border-radius: 5px;
@@ -278,8 +278,8 @@
         }
         
         .back-button {
-            background: linear-gradient(to bottom, #6c757d, #495057);
-            box-shadow: 0 4px 极速 #343a40;
+            background: linear-gradient(to bottom, #6c757极速d, #495057);
+            box-shadow: 0 4px 0 #343a40;
             margin-right: 10px;
         }
         
@@ -359,8 +359,39 @@
         }
     </style>
 </head>
-
 <body>
+    <!-- Verificación de autenticación -->
+    <script>
+        // Verificar si tenemos la cookie de autenticación
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Verificar autenticación inmediatamente al cargar la página
+        window.addEventListener('load', function() {
+            // Solo redirigir si no tenemos la cookie y no estamos ya en login
+            if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
+                console.log('No autenticado, redirigiendo a login');
+                window.location.href = '/login.html';
+                return; // Detener la ejecución para evitar que se cargue el resto de la página
+            }
+            
+            // Si estamos autenticados, inicializar la interfaz
+            if (getCookie('userAuth')) {
+                console.log('Usuario autenticado, inicializando interfaz');
+                initializeInterface();
+            }
+        });
+
+        function initializeInterface() {
+            // Esta función se llamará solo cuando el usuario esté autenticado
+            // Aquí va todo el código de inicialización de tu interfaz
+        }
+    </script>
+
     <div class="camo-pattern"></div>
     <div class="container">
         <div class="header">
@@ -368,7 +399,7 @@
                 <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar" class="logo">
             </div>
             <h1>Informes/Registros</h1>
-            <p class="subtitle">Seleccione una opción del menú</p>
+            <p class="subtitle">Seleccione una opción del menú</极速p>
         </div>
         
         <!-- Menú Principal -->
@@ -379,7 +410,7 @@
                 <p>Formulario de informes generales</p>
             </div>
             <div class="menu-option" data-target="informes-suministros">
-                <i class="fas fa-truck-loading"></i>
+                <i class="fas fa-truck-loading"></极速i>
                 <h2>Suministros</h2>
                 <p>Opciones de aduanas y entrega de suministros</p>
             </div>
@@ -409,7 +440,7 @@
         
         <!-- Submenú para Registro Guardia -->
         <div class="submenu" id="submenu-registro-guardia">
-            <div class="submenu-option" data-target="libro-guardia">
+            <极速div class="submenu-option" data-target="libro-guardia">
                 <h2>Libro de Guardia</h2>
                 <p>Registro de turnos de guardia</p>
             </div>
@@ -443,9 +474,9 @@
                 <div class="form-group">
                     <label for="unidades-material">Unidades y material utilizado:</label>
                     <textarea id="unidades-material" required></textarea>
-                </div>
+                </极速div>
                 <div class="form-group">
-                    <label for="informe-situacion">Informe de situación:</label>
+                    <极速label for="informe-situacion">Informe de situación:</label>
                     <textarea id="informe-situacion" required></textarea>
                 </div>
                 <div class="form-group">
@@ -505,8 +536,8 @@
         
         <!-- Formulario de Entrega de Suministros -->
         <div class="form-container" id="form-entrega-suministros">
-            <div class="form-header">
-                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
+            <div class极速="form-header">
+                <img src="https://i.imgur.com/FeE9uv极速O.png" alt="Logo Militar">
                 <h2>Entrega de Suministros</h2>
             </div>
             <form id="entrega-suministros-form">
@@ -517,7 +548,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="suministros-miembros">Miembros Implicados:</label>
+                    <label for="suministros-miembros">Miembros Implicados:</极速label>
                     <textarea id="suministros-miembros" required></textarea>
                 </div>
                 <div class="form-group">
@@ -557,16 +588,16 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="libro-hora-inicio">Hora de inicio:</label>
+                    <label for极速="libro-hora-inicio">Hora de inicio:</label>
                     <input type="text" id="libro-hora-inicio" required>
                 </div>
                 <div class="form-group">
                     <label for="libro-hora-fin">Hora de fin:</label>
                     <input type="text" id="libro-hora-fin" required>
-                </div>
+                </极速div>
                 <div class="form-group">
                     <label for="libro-observaciones">Observaciones:</label>
-                    <textarea id="libro-observaciones"></textarea>
+                    <textarea id="极速libro-observaciones"></textarea>
                 </div>
                 <div class="button-group">
                     <button type="button" class="back-button">Volver al Menú</button>
@@ -599,7 +630,7 @@
                     <textarea id="registro-motivo" required></textarea>
                 </div>
                 <div class="button-group">
-                    <button type="button" class="back-button">Volver al Menú</button>
+                    <button type="button" class极速="back-button">Volver al Menú</button>
                     <button type="submit">Registrar</button>
                 </div>
             </form>
@@ -628,7 +659,7 @@
                 </div>
                 <div class="form-group">
                     <label for="unidades-insumos">USO DE INSUMOS:</label>
-                    <input type="text" id="unidades-insumos" required>
+                    <input type="text极速" id="unidades-insumos" required>
                 </div>
                 <div class="form-group">
                     <label for="unidades-motivo">MOTIVO DEL USO DE INSUMOS:</label>
@@ -645,349 +676,337 @@
     </div>
 
     <script>
-        // Lista de miembros
-        const miembros = [
-            "ALAN COLLINS", "ALEJANDRO CORLENE", "ANDREW GRAVES", "ANTHONY BLACK",
-            "BELEN GARCÍA", "DAVID TORO", "EDUARDO TABARES", "ELIZABETH NOVIKOV",
-            "ENDER PERES", "HAKEEM WAHID", "HUNTER BLAKE", "JHON MCLAIN",
-            "JOHAN ANDREU", "JOHNNY MACTAVISH", "KEVIN RUALES", "LOGAN WILLIAMS",
-            "LUCAS PRIETO", "MATHEO HERNANDEZ", "MAURICIO LEPOLLO", "MAX WEXLER",
-            "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOLEY", "SOLOMONE LAIN",
-            "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
-        ];
-
-        // Webhooks de Discord
-        const webhooks = {
-            informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-            aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-            entrega_suministros: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-            libro_guardia: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-            entradas_salidas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-            registro_unidades: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX"
-        };
-
-        // Nombres para los bots de Discord
-        const botNames = {
-            informes: "INFORMES",
-            aduanas: "ADUANAS",
-            entrega_suministros: "ENTREGA DE SUMINISTROS",
-            libro_guardia: "LIBRO DE GUARDIA",
-            entradas_salidas: "ENTRADAS/SALIDAS",
-            registro_unidades: "REGISTRO DE UNIDADES"
-        };
-
-        
-// Agregar evento al botón de login - CORRECCIÓN IMPORTANTE
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            // Redirigir a la ruta correcta de Vercel
-            window.location.href = '/api/auth';
-        });
-
-        
-// Verificar si tenemos la cookie de autenticación
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return null;
-}
-
-// Verificar autenticación inmediatamente al cargar la página
-if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
-    console.log('No autenticado, redirigiendo a login');
-    window.location.href = '/login.html';
-}
-
-
-
-// Función para formatear la fecha y hora en español
-        function formatDateTime() {
-            const now = new Date();
-            const options = { 
-                 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
-                timeZone: 'UTC'
-            };
-            
-            let dateTimeStr = now.toLocaleDateString('es-ES', options);
-            
-            // Capitalizar la primera letra de cada palabra
-            dateTimeStr = dateTimeStr.replace(/\b\w/g, l => l.toUpperCase());
-            
-            return dateTimeStr;
-        }
-
-        // Inicializar la página
+        // Esperar a que el DOM esté completamente cargado
         document.addEventListener('DOMContentLoaded', function() {
-            // Llenar selects con la lista de miembros
-            const memberSelects = document.querySelectorAll('select');
-            memberSelects.forEach(select => {
-                // Guardar el primer option (placeholder)
-                const firstOption = select.options[0];
-                select.innerHTML = '';
-                select.appendChild(firstOption);
-                
-                // Agregar opciones de miembros
-                miembros.forEach(miembro => {
-                    const option = document.createElement('option');
-                    option.value = miembro;
-                    option.textContent = miembro;
-                    select.appendChild(option);
-                });
-            });
-            
-            // Establecer hora UTC por defecto en campos de fecha/hora
-            setUTCDateTimeDefaults();
-            
-            // Configurar event listeners
-            setupEventListeners();
+            // Solo inicializar la interfaz si el usuario está autenticado
+            if (getCookie('userAuth')) {
+                initApp();
+            }
         });
 
-        // Establecer valores por defecto UTC en campos de fecha/hora
-        function setUTCDateTimeDefaults() {
-            const dateTimeStr = formatDateTime();
-            
-            // Establecer en campos relevantes
-            const dateTimeFields = [
-                'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
-                'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
-                'libro-hora-fin', 'registro-hora', 'unidades-fecha-hora'
+        function initApp() {
+            // Lista de miembros
+            const miembros = [
+                "ALAN COLLINS", "ALEJANDRO CORLENE", "ANDREW GRAVES", "ANTHONY BLACK",
+                "BELEN GARCÍA", "DAVID TORO", "EDUARDO TABARES", "ELIZABETH NOVIKOV",
+                "ENDER PERES", "HAKEEM WAHID", "HUNTER BLAKE", "JHON MCLAIN",
+                "JOHAN ANDREU", "JOHNNY MACTAVISH", "极速KEVIN RUALES", "LOGAN WILLIAMS",
+                "LUCAS PRIETO", "MATHEO HERNANDEZ", "MAURICIO LEPOLLO", "MAX WEXLER",
+                "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOLEY", "SOLOMONE LAIN",
+                "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
             ];
-            
-            dateTimeFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    field.value = dateTimeStr;
-                }
-            });
-        }
 
-        // Configurar todos los event listeners
-        function setupEventListeners() {
-            // Menú principal
-            const menuOptions = document.querySelectorAll('.menu-option');
-            menuOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const target = this.getAttribute('data-target');
-                    showMenuOption(target);
-                });
-            });
-            
-            // Submenús
-            const submenuOptions = document.querySelectorAll('.submenu-option');
-            submenuOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const target = this.getAttribute('data-target');
-                    showForm(target);
-                });
-            });
-            
-            // Botones de volver
-            const backButtons = document.querySelectorAll('.back-button');
-            backButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    showMainMenu();
-                });
-            });
-            
-            // Formularios
-            setupFormListeners();
-        }
+            // Webhooks de Discord
+            const webhooks = {
+                informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--Wup极速XdzpSJ1r2Ogiq4HpOjk9kIX",
+                aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6极速ps8z20A-o2-RFnjVF5HC4CcRPy极速C2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+                entrega_suministros: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+                libro_guardia: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpO极速jk9kIX",
+                entradas_salidas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+                registro_unidades: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX"
+            };
 
-        // Mostrar opción del menú principal
-        function showMenuOption(target) {
-            // Ocultar todo primero
-            hideAll();
-            
-            if (target === 'informes') {
-                document.getElementById('form-informes').style.display = 'block';
-            } else if (target === 'informes-suministros') {
-                document.getElementById('submenu-informes-suministros').style.display = 'grid';
-            } else if (target === 'registro-guardia') {
-                document.getElementById('submenu-registro-guardia').style.display = 'grid';
-            } else if (target === 'registro-unidades') {
-                document.getElementById('form-registro-unidades').style.display = 'block';
+            // Nombres para los bots de Discord
+            const botNames = {
+                informes: "INFORMES",
+                aduanas: "ADUANAS",
+                entrega_suministros: "ENTREGA DE SUMINISTROS",
+                libro_guardia: "LIBRO DE GUARDIA",
+                entradas_salidas: "ENTRADAS/SALIDAS",
+                registro_unidades: "REGISTRO DE UNIDADES"
+            };
+
+            // Función para formatear la fecha y hora en español
+            function formatDateTime() {
+                const now = new Date();
+                const options = { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit',
+                    timeZone: 'UTC'
+                };
+                
+                let dateTimeStr = now.toLocaleDateString('es-ES', options);
+                
+                // Capitalizar la primera letra de cada palabra
+                dateTimeStr = dateTimeStr.replace(/\b\w/g, l => l.toUpperCase());
+                
+                return dateTimeStr;
             }
-        }
 
-        // Mostrar formulario específico
-        function showForm(formId) {
-            hideAll();
-            document.getElementById(`form-${formId}`).style.display = 'block';
-        }
+            // Inicializar la aplicación
+            function initializeApp() {
+                // Llenar selects con la lista de miembros
+                const memberSelects = document.querySelectorAll('select');
+                memberSelects.forEach(select => {
+                    // Guardar el primer option (placeholder)
+                    const firstOption = select.options[0];
+                    select.innerHTML = '';
+                    select.appendChild(firstOption);
+                    
+                    // Agregar opciones de miembros
+                    miembros.forEach(miembro => {
+                        const option = document.createElement('option');
+                        option.value = miembro;
+                        option.textContent = miembro;
+                        select.appendChild(option);
+                    });
+                });
+                
+                // Establecer hora UTC por defecto en campos de fecha/hora
+                setUTCDateTimeDefaults();
+                
+                // Configurar event listeners
+                setupEventListeners();
+            }
 
-        // Mostrar menú principal
-        function showMainMenu() {
-            hideAll();
-            document.getElementById('main-menu').style.display = 'grid';
-        }
+            // Establecer valores por defecto UTC en campos de fecha/hora
+            function setUTCDateTimeDefaults() {
+                const dateTimeStr = formatDateTime();
+                
+                // Establecer en campos relevantes
+                const dateTimeFields = [
+                    'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
+                    'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
+                    'libro-hora-fin', 'registro-hora', 'unidades-fecha-hora'
+                ];
+                
+                dateTimeFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.value = dateTimeStr;
+                    }
+                });
+            }
 
-        // Ocultar todos los elementos
-        function hideAll() {
-            const elementsToHide = [
-                'main-menu', 'submenu-informes-suministros', 'submenu-registro-guardia',
-                'form-informes', 'form-aduanas', 'form-entrega-suministros',
-                'form-libro-guardia', 'form-entradas-salidas', 'form-registro-unidades'
-            ];
-            
-            elementsToHide.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) element.style.display = 'none';
-            });
-            
-            // Ocultar notificación
-            document.getElementById('notification').style.display = 'none';
-        }
+            // Configurar todos los event listeners
+            function setupEventListeners() {
+                // Menú principal
+                const menuOptions = document.querySelectorAll('.menu-option');
+                menuOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const target = this.getAttribute('data-target');
+                        showMenuOption(target);
+                    });
+                });
+                
+                // Submenús
+                const submenuOptions = document.querySelectorAll('.submenu-option');
+                submenuOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const target = this.getAttribute('data-target');
+                        showForm(target);
+                    });
+                });
+                
+                // Botones de volver
+                const backButtons = document.querySelectorAll('.back-button');
+                backButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        showMainMenu();
+                    });
+                });
+                
+                // Formularios
+                setupFormListeners();
+            }
 
-        // Configurar listeners para los formularios
-        function setupFormListeners() {
-            // Informes
-            document.getElementById('informes-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendToDiscord('informes', formatInformesData());
-            });
-            
-            // Aduanas
-            document.getElementById('aduanas-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendToDiscord('aduanas', formatAduanasData());
-            });
-            
-            // Entrega de suministros
-            document.getElementById('entrega-suministros-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendToDiscord('entrega_suministros', formatSuministrosData());
-            });
-            
-            // Libro de guardia
-            document.getElementById('libro-guardia-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendToDiscord('libro_guardia', formatLibroGuardiaData());
-            });
-            
-            // Entradas y salidas
-            document.getElementById('entradas-salidas-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendToDiscord('entradas_salidas', formatEntradasSalidasData());
-            });
-            
-            // Registro de unidades
-            document.getElementById('registro-unidades-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendToDiscord('registro_unidades', formatRegistroUnidadesData());
-            });
-        }
+            // Mostrar opción del menú principal
+            function showMenuOption(target) {
+                // Ocultar todo primero
+                hideAll();
+                
+                if (target === 'informes') {
+                    document.getElementById('form-informes').style.display = 'block';
+                } else if (target === 'informes-suministros') {
+                    document.getElementById('submenu-informes-suministros').style.display = 'grid';
+                } else if (target === 'registro-guardia') {
+                    document.getElementById('submenu-registro-guardia').style.display = '极速grid';
+                } else if (target === 'registro-unidades') {
+                    document.getElementById('form-registro-unidades').style.display = 'block';
+                }
+            }
 
-        // Funciones para formatear datos para Discord
-        function formatInformesData() {
-            return `**Miembro al mando:** ${document.getElementById('miembro-mando').value}
+            // Mostrar formulario específico
+            function showForm(formId) {
+                hideAll();
+                document.getElementById(`form-${formId}`).style.display = 'block';
+            }
+
+            // Mostrar menú principal
+            function show极速MainMenu() {
+                hideAll();
+                document.getElementById('main-menu').style.display = 'grid';
+            }
+
+            // Ocultar todos los elementos
+            function hideAll() {
+                const elementsToHide = [
+                    'main-menu', 'submenu-informes-suministros', 'submenu-registro-guardia',
+                    'form-informes', 'form-aduanas', 'form-entrega-suministros',
+                    'form-libro-guardia', 'form-entradas-salidas', 'form-registro-unidades'
+                ];
+                
+                elementsToHide.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) element.style.display = 'none';
+                });
+                
+                // Ocultar notificación
+                document.getElementById('notification').style.display = 'none';
+            }
+
+            // Configurar listeners para los formularios
+            function setupFormListeners() {
+                // Informes
+                document.getElementById('informes-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    sendToDiscord('informes', formatInformesData());
+                });
+                
+                // Aduanas
+                document.getElementById('aduanas-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    sendToDiscord('aduanas', formatAduanasData());
+                });
+                
+                // Entrega de suministros
+                document.getElementById('entrega-suministros-form').addEventListener('submit', function(e极速) {
+                    e.preventDefault();
+                    sendToDiscord('entrega_suministros', formatSuministrosData());
+                });
+                
+                // Libro de guardia
+                document.getElementById('libro-guardia-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    sendToDiscord('libro_guardia', formatLibroGuardiaData());
+                });
+                
+                // Entradas y salidas
+                document.getElementById('entradas-salidas-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    sendToDiscord('entradas_salidas', formatEntradasSalidasData());
+                });
+                
+                // Registro de unidades
+                document.getElementById('registro-unidades-form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    sendToDiscord('registro_unidades', formatRegistroUnidadesData());
+                });
+            }
+
+            // Funciones para formatear datos para Discord
+            function formatInformesData() {
+                return `**Miembro al mando:** ${document.getElementById('miembro-mando').value}
 **Miembros implicados:** ${document.getElementById('miembros-implicados').value}
 **Lugar fecha y hora:** ${document.getElementById('lugar-fecha-hora').value}
 **Unidades y material utilizado:** ${document.getElementById('unidades-material').value}
 **Informe de situación:** ${document.getElementById('informe-situacion').value}
 **Observaciones adicionales:** ${document.getElementById('observaciones').value}
 **Observaciones gráficas:** ${document.getElementById('observaciones-graficas').value}`;
-        }
+            }
 
-        function formatAduanasData() {
-            return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('aduanas-miembro-mando').value}
+            function formatAduanasData() {
+                return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('aduanas-miembro-mando').value}
 **Miembros Implicados:** ${document.getElementById('aduanas-miembros').value}
 **Unidades Utilizadas:** ${document.getElementById('aduanas-unidades').value}
 **Hora de Inicio:** ${document.getElementById('aduanas-hora-inicio').value}
 **Hora de Finalización:** ${document.getElementById('aduanas-hora-fin').value}
 **Observaciones:** ${document.getElementById('aduanas-observaciones').value}`;
-        }
+            }
 
-        function formatSuministrosData() {
-            return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('suministros-miembro-mando').value}
+            function formatSuministrosData() {
+                return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('suministros-miembro-mando极速').value}
 **Miembros Implicados:** ${document.getElementById('suministros-miembros').value}
 **Unidades Utilizadas:** ${document.getElementById('suministros-unidades').value}
 **Hora de Inicio:** ${document.getElementById('suministros-hora-inicio').value}
 **Hora de Finalización:** ${document.getElementById('suministros-hora-fin').value}
 **Observaciones:** ${document.getElementById('suministros-observaciones').value}`;
-        }
+            }
 
-        function formatLibroGuardiaData() {
-            return `**Rango y nombre:** ${document.getElementById('libro-rango-nombre').value}
-**Hora de inicio:** ${document.getElementById('libro-hora-inicio').value}
-**Hora de fin:** ${document.getElementById('libro-hora-fin').value}
+            function formatLibroGuardiaData() {
+                return `**Rango y nombre:** ${document.getElementById('libro-rango-nombre').value}
+**极速Hora de inicio:** ${document.getElementById('libro-hora-inicio').value}
+**Hora de fin:** ${document.getElementById('libro-hora-fin').极速value}
 **Observaciones:** ${document.getElementById('libro-observaciones').value}`;
-        }
+            }
 
-        function formatEntradasSalidasData() {
-            return `**Hora:** ${document.getElementById('registro-hora').value}
+            function formatEntradasSalidasData() {
+                return `**Hora:** ${document.getElementById('registro-hora').value}
 **Placa del vehículo:** ${document.getElementById('registro-placa').value}
 **Nombre de la persona:** ${document.getElementById('registro-nombre').value}
 **Motivo de ingreso / salida:** ${document.getElementById('registro-motivo').value}`;
-        }
+            }
 
-        function formatRegistroUnidadesData() {
-            return `**NOMBRE:** ${document.getElementById('unidades-nombre').value}
+            function formatRegistroUnidadesData() {
+                return `**NOMBRE:** ${document.getElementById('unidades-nombre').value}
 **UNIDAD:** ${document.getElementById('unidades-unidad').value}
 **FECHA/HORA:** ${document.getElementById('unidades-fecha-hora').value}
 **USO DE INSUMOS:** ${document.getElementById('unidades-insumos').value}
 **MOTIVO DEL USO DE INSUMOS:** ${document.getElementById('unidades-motivo').value}`;
-        }
-
-        // Enviar datos a Discord via webhook
-        function sendToDiscord(type, content) {
-            const webhookURL = webhooks[type];
-            
-            // Verificar si la URL del webhook está configurada correctamente
-            if (!webhookURL) {
-                showNotification('Por favor, configura las URLs de webhook en el código JavaScript.', 'error');
-                return;
             }
-            
-            const payload = {
-                username: botNames[type],
-                avatar_url: "https://i.imgur.com/FeE9uvO.png",
-                content: content
-            };
-            
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-            .then(response => {
-                if (response.ok) {
-                    showNotification('Formulario enviado correctamente a Discord.', 'success');
-                    // Limpiar formulario después de enviar
-                    document.querySelector(`#form-${type.split('_').join('-')} form`).reset();
-                    // Restablecer hora UTC
-                    setUTCDateTimeDefaults();
-                } else {
-                    showNotification('Error al enviar el formulario. Intenta nuevamente.', 'error');
-                }
-            })
-            .catch(error => {
-                // Aunque haya error de conexión, a veces el mensaje llega a Discord
-                // así que mostramos un mensaje de advertencia en lugar de error
-                showNotification('El formulario se ha enviado, pero hubo un problema de conexión. Verifica en Discord.', 'error');
-                console.error('Error:', error);
-            });
-        }
 
-        // Mostrar notificación
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = 'notification ' + type;
-            notification.style.display = 'block';
-            
-            // Ocultar notificación después de 5 segundos
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 5000);
-        }
+            // Enviar datos a Discord via webhook
+            function sendToDiscord(type, content) {
+                const webhookURL = webhooks[type];
+                
+                // Verificar si la URL del webhook está configurada correctamente
+                if (!webhookURL) {
+                    showNotification('Por favor, configura las URLs de webhook en el código JavaScript.', 'error');
+                    return;
+                }
+                
+                const payload = {
+                    username: botNames[type],
+                    avatar_url: "https://i.imgur.com/FeE9uvO.png",
+                    content: content
+                };
+                
+                fetch(webhookURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showNotification('Formulario enviado correctamente a Discord.', 'success');
+                        // Limpiar formulario después de enviar
+                        document.querySelector(`#form-${type.split('_').join('-')} form`).reset();
+                        // Restablecer hora UTC
+                        setUTCDateTimeDefaults();
+                    } else {
+                        showNotification('Error al enviar el formulario. Intenta nuevamente.', 'error');
+                    }
+                })
+                .catch(error => {
+                    // Aunque haya error de conexión, a veces el mensaje llega a Discord
+                    // así que mostramos un mensaje de advertencia en lugar de error
+                    showNotification('El formulario se ha enviado, pero hubo un problema de conexión. Verifica en Discord.', 'error');
+                    console.error('Error:', error);
+                });
+            }
+
+            // Mostrar notificación
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = 'notification ' + type;
+                notification.style.display = 'block';
+                
+                // Ocultar notificación después de 5 segundos
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
+
+            // Inicializar la aplicación
+            initializeApp();
+        });
     </script>
 </body>
 </html>
