@@ -48,7 +48,7 @@
             background: linear-gradient(135deg, var(--military-dark) 0%, var(--military-medium) 100%);
             border: 2px solid var(--military-tan);
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 极速6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
             position: relative;
             overflow: hidden;
         }
@@ -168,7 +168,7 @@
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 极速3s ease;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             min-height: 120px;
             display: flex;
@@ -194,7 +194,7 @@
         
         .form-container {
             display: none;
-            background: linear-gradient(135deg, var(--military-dark) 极速0%, var(--military-medium) 100%);
+            background: linear-gradient(135deg, var(--military-dark) 0%, var(--military-medium) 100%);
             border: 2px solid var(--military-tan);
             border-radius: 10px;
             padding: 30px;
@@ -206,7 +206,7 @@
             text-align: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 1px solid var(--极速military-tan);
+            border-bottom: 1px solid var(--military-tan);
         }
         
         .form-header img {
@@ -217,7 +217,7 @@
             margin-bottom: 15px;
         }
         
-极速        .form-header h2 {
+        .form-header h2 {
             color: var(--military-tan);
             font-size: 1.8rem;
             text-transform: uppercase;
@@ -237,7 +237,7 @@
         
         input, select, textarea {
             width: 100%;
-            padding: 12极速px 15px;
+            padding: 12px 15px;
             background-color: rgba(26, 31, 28, 0.7);
             border: 1px solid var(--military-light);
             border-radius: 5px;
@@ -278,7 +278,7 @@
         }
         
         .back-button {
-            background: linear-gradient(to bottom, #6c757极速d, #495057);
+            background: linear-gradient(to bottom, #6c757d, #495057);
             box-shadow: 0 4px 0 #343a40;
             margin-right: 10px;
         }
@@ -360,37 +360,37 @@
     </style>
 </head>
 <body>
-    
+    <!-- Verificación de autenticación -->
     <script>
-       // Verificar si tenemos la cookie de autenticación
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    }
-
-    // Verificar autenticación inmediatamente al cargar la página
-    window.addEventListener('load', function() {
-        // Solo redirigir si no tenemos la cookie y no estamos ya en login
-        if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
-            console.log('No autenticado, redirigiendo a login');
-            window.location.href = '/login.html';
-            return; // Detener la ejecución para evitar que se cargue el resto de la página
+        // Verificar si tenemos la cookie de autenticación
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
         }
-        
-        // Si estamos autenticados, inicializar la interfaz
-        if (getCookie('userAuth')) {
-            console.log('Usuario autenticado, inicializando interfaz');
-            initializeInterface();
-        }
-    });
 
-    function initializeInterface() {
-        // Esta función se llamará solo cuando el usuario esté autenticado
-        // Aquí va todo el código de inicialización de tu interfaz
-        initApp(); // Llamar a la función de inicialización de la aplicación
-    }
+        // Verificar autenticación inmediatamente al cargar la página
+        window.addEventListener('load', function() {
+            // Solo redirigir si no tenemos la cookie y no estamos ya en login
+            if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
+                console.log('No autenticado, redirigiendo a login');
+                window.location.href = '/login.html';
+                return; // Detener la ejecución para evitar que se cargue el resto de la página
+            }
+            
+            // Si estamos autenticados, inicializar la interfaz
+            if (getCookie('userAuth')) {
+                console.log('Usuario autenticado, inicializando interfaz');
+                initializeInterface();
+            }
+        });
+
+        function initializeInterface() {
+            // Esta función se llamará solo cuando el usuario esté autenticado
+            // Aquí va todo el código de inicialización de tu interfaz
+            initApp();
+        }
     </script>
 
     <div class="camo-pattern"></div>
@@ -400,7 +400,7 @@
                 <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar" class="logo">
             </div>
             <h1>Informes/Registros</h1>
-            <p class="subtitle">Seleccione una opción del menú</极速p>
+            <p class="subtitle">Seleccione una opción del menú</p>
         </div>
         
         <!-- Menú Principal -->
@@ -411,7 +411,7 @@
                 <p>Formulario de informes generales</p>
             </div>
             <div class="menu-option" data-target="informes-suministros">
-                <i class="fas fa-truck-loading"></极速i>
+                <i class="fas fa-truck-loading"></i>
                 <h2>Suministros</h2>
                 <p>Opciones de aduanas y entrega de suministros</p>
             </div>
@@ -441,7 +441,7 @@
         
         <!-- Submenú para Registro Guardia -->
         <div class="submenu" id="submenu-registro-guardia">
-            <极速div class="submenu-option" data-target="libro-guardia">
+            <div class="submenu-option" data-target="libro-guardia">
                 <h2>Libro de Guardia</h2>
                 <p>Registro de turnos de guardia</p>
             </div>
@@ -475,9 +475,9 @@
                 <div class="form-group">
                     <label for="unidades-material">Unidades y material utilizado:</label>
                     <textarea id="unidades-material" required></textarea>
-                </极速div>
+                </div>
                 <div class="form-group">
-                    <极速label for="informe-situacion">Informe de situación:</label>
+                    <label for="informe-situacion">Informe de situación:</label>
                     <textarea id="informe-situacion" required></textarea>
                 </div>
                 <div class="form-group">
@@ -537,8 +537,8 @@
         
         <!-- Formulario de Entrega de Suministros -->
         <div class="form-container" id="form-entrega-suministros">
-            <div class极速="form-header">
-                <img src="https://i.imgur.com/FeE9uv极速O.png" alt="Logo Militar">
+            <div class="form-header">
+                <img src="https://i.imgur.com/FeE9uvO.png" alt="Logo Militar">
                 <h2>Entrega de Suministros</h2>
             </div>
             <form id="entrega-suministros-form">
@@ -549,7 +549,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="suministros-miembros">Miembros Implicados:</极速label>
+                    <label for="suministros-miembros">Miembros Implicados:</label>
                     <textarea id="suministros-miembros" required></textarea>
                 </div>
                 <div class="form-group">
@@ -589,16 +589,16 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for极速="libro-hora-inicio">Hora de inicio:</label>
+                    <label for="libro-hora-inicio">Hora de inicio:</label>
                     <input type="text" id="libro-hora-inicio" required>
                 </div>
                 <div class="form-group">
                     <label for="libro-hora-fin">Hora de fin:</label>
                     <input type="text" id="libro-hora-fin" required>
-                </极速div>
+                </div>
                 <div class="form-group">
                     <label for="libro-observaciones">Observaciones:</label>
-                    <textarea id="极速libro-observaciones"></textarea>
+                    <textarea id="libro-observaciones"></textarea>
                 </div>
                 <div class="button-group">
                     <button type="button" class="back-button">Volver al Menú</button>
@@ -631,7 +631,7 @@
                     <textarea id="registro-motivo" required></textarea>
                 </div>
                 <div class="button-group">
-                    <button type="button" class极速="back-button">Volver al Menú</button>
+                    <button type="button" class="back-button">Volver al Menú</button>
                     <button type="submit">Registrar</button>
                 </div>
             </form>
@@ -660,7 +660,7 @@
                 </div>
                 <div class="form-group">
                     <label for="unidades-insumos">USO DE INSUMOS:</label>
-                    <input type="text极速" id="unidades-insumos" required>
+                    <input type="text" id="unidades-insumos" required>
                 </div>
                 <div class="form-group">
                     <label for="unidades-motivo">MOTIVO DEL USO DE INSUMOS:</label>
@@ -691,7 +691,7 @@
                 "ALAN COLLINS", "ALEJANDRO CORLENE", "ANDREW GRAVES", "ANTHONY BLACK",
                 "BELEN GARCÍA", "DAVID TORO", "EDUARDO TABARES", "ELIZABETH NOVIKOV",
                 "ENDER PERES", "HAKEEM WAHID", "HUNTER BLAKE", "JHON MCLAIN",
-                "JOHAN ANDREU", "JOHNNY MACTAVISH", "极速KEVIN RUALES", "LOGAN WILLIAMS",
+                "JOHAN ANDREU", "JOHNNY MACTAVISH", "KEVIN RUALES", "LOGAN WILLIAMS",
                 "LUCAS PRIETO", "MATHEO HERNANDEZ", "MAURICIO LEPOLLO", "MAX WEXLER",
                 "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOLEY", "SOLOMONE LAIN",
                 "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
@@ -699,10 +699,10 @@
 
             // Webhooks de Discord
             const webhooks = {
-                informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--Wup极速XdzpSJ1r2Ogiq4HpOjk9kIX",
-                aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6极速ps8z20A-o2-RFnjVF5HC4CcRPy极速C2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+                informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+                aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
                 entrega_suministros: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-                libro_guardia: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpO极速jk9kIX",
+                libro_guardia: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
                 entradas_salidas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
                 registro_unidades: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX"
             };
@@ -825,7 +825,7 @@
                 } else if (target === 'informes-suministros') {
                     document.getElementById('submenu-informes-suministros').style.display = 'grid';
                 } else if (target === 'registro-guardia') {
-                    document.getElementById('submenu-registro-guardia').style.display = '极速grid';
+                    document.getElementById('submenu-registro-guardia').style.display = 'grid';
                 } else if (target === 'registro-unidades') {
                     document.getElementById('form-registro-unidades').style.display = 'block';
                 }
@@ -838,7 +838,7 @@
             }
 
             // Mostrar menú principal
-            function show极速MainMenu() {
+            function showMainMenu() {
                 hideAll();
                 document.getElementById('main-menu').style.display = 'grid';
             }
@@ -875,7 +875,7 @@
                 });
                 
                 // Entrega de suministros
-                document.getElementById('entrega-suministros-form').addEventListener('submit', function(e极速) {
+                document.getElementById('entrega-suministros-form').addEventListener('submit', function(e) {
                     e.preventDefault();
                     sendToDiscord('entrega_suministros', formatSuministrosData());
                 });
@@ -920,7 +920,7 @@
             }
 
             function formatSuministrosData() {
-                return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('suministros-miembro-mando极速').value}
+                return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('suministros-miembro-mando').value}
 **Miembros Implicados:** ${document.getElementById('suministros-miembros').value}
 **Unidades Utilizadas:** ${document.getElementById('suministros-unidades').value}
 **Hora de Inicio:** ${document.getElementById('suministros-hora-inicio').value}
@@ -930,8 +930,8 @@
 
             function formatLibroGuardiaData() {
                 return `**Rango y nombre:** ${document.getElementById('libro-rango-nombre').value}
-**极速Hora de inicio:** ${document.getElementById('libro-hora-inicio').value}
-**Hora de fin:** ${document.getElementById('libro-hora-fin').极速value}
+**Hora de inicio:** ${document.getElementById('libro-hora-inicio').value}
+**Hora de fin:** ${document.getElementById('libro-hora-fin').value}
 **Observaciones:** ${document.getElementById('libro-observaciones').value}`;
             }
 
@@ -1007,7 +1007,7 @@
 
             // Inicializar la aplicación
             initializeApp();
-        });
+        }
     </script>
 </body>
 </html>
