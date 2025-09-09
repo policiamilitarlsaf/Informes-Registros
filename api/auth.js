@@ -102,8 +102,25 @@ module.exports = async (req, res) => {
         }
         
         // Si todo está bien, redirigir al index.html
-        res.setHeader('Set-Cookie', 'userAuth=true; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600');
-        res.writeHead(302, { Location: '/index.html' });
+        // Usamos una página intermedia para establecer la cookie y luego redirigir
+        const html = `
+        <html>
+        <head>
+            <title>Redireccionando...</title>
+        </head>
+        <body>
+            <script>
+                // Establecer la cookie de autenticación
+                document.cookie = 'userAuth=true; path=/; max-age=3600; secure; samesite=lax';
+                // Redirigir al index
+                window.location.href = '/index.html';
+            </script>
+        </body>
+        </html>
+        `;
+        
+        res.setHeader('Content-Type', 'text/html');
+        res.write(html);
         return res.end();
         
       } catch (error) {
