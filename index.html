@@ -315,6 +315,106 @@
             border: 1px solid #dc3545;
         }
         
+        /* Estilos para el contenedor de pegado de imágenes */
+        .image-paste-container {
+            min-height: 120px;
+            padding: 12px 15px;
+            background-color: rgba(26, 31, 28, 0.7);
+            border: 1px solid var(--military-light);
+            border-radius: 5px;
+            color: var(--military-white);
+            resize: vertical;
+            overflow: auto;
+        }
+        
+        .image-paste-container:focus {
+            outline: none;
+            border-color: var(--military-tan);
+            box-shadow: 0 0 0 2px rgba(214, 202, 157, 0.3);
+        }
+        
+        .image-paste-container img {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 5px;
+            border: 1px solid var(--military-tan);
+            border-radius: 3px;
+        }
+        
+        .image-placeholder {
+            color: #7d9772;
+            font-style: italic;
+        }
+        
+        .uploading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 31, 28, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--military-tan);
+            font-weight: bold;
+        }
+        
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .image-wrapper img {
+            max-width: 150px;
+            max-height: 150px;
+            border: 1px solid var(--military-tan);
+            border-radius: 3px;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: rgba(220, 53, 69, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .image-status {
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        .status-success {
+            color: #28a745;
+        }
+        
+        .status-error {
+            color: #dc3545;
+        }
+        
+        .status-uploading {
+            color: var(--military-tan);
+        }
+        
         @media (max-width: 768px) {
             .menu {
                 grid-template-columns: 1fr;
@@ -341,6 +441,11 @@
             .menu-option p {
                 font-size: 0.85rem;
             }
+            
+            .image-wrapper img {
+                max-width: 100px;
+                max-height: 100px;
+            }
         }
         
         .camo-pattern {
@@ -357,10 +462,45 @@
             pointer-events: none;
             z-index: -1;
         }
+
+        /* Estilos para el loader de autenticación */
+        .auth-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 31, 28, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            color: var(--military-tan);
+        }
+        
+        .auth-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(214, 202, 157, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--military-tan);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <!-- Verificación de autenticación -->
+    <div id="auth-loader" class="auth-loader">
+        <div class="auth-spinner"></div>
+        <p>Verificando autenticación...</p>
+    </div>
+
     <script>
         // Verificar si tenemos la cookie de autenticación
         function getCookie(name) {
@@ -372,23 +512,25 @@
 
         // Verificar autenticación inmediatamente al cargar la página
         window.addEventListener('load', function() {
+            const authLoader = document.getElementById('auth-loader');
+            
             // Solo redirigir si no tenemos la cookie y no estamos ya en login
             if (!getCookie('userAuth') && !window.location.href.includes('login.html')) {
                 console.log('No autenticado, redirigiendo a login');
                 window.location.href = '/login.html';
-                return; // Detener la ejecución para evitar que se cargue el resto de la página
+                return;
             }
             
-            // Si estamos autenticados, inicializar la interfaz
+            // Si estamos autenticados, ocultar el loader y inicializar la interfaz
             if (getCookie('userAuth')) {
                 console.log('Usuario autenticado, inicializando interfaz');
+                authLoader.style.display = 'none';
                 initializeInterface();
             }
         });
 
         function initializeInterface() {
             // Esta función se llamará solo cuando el usuario esté autenticado
-            // Aquí va todo el código de inicialización de tu interfaz
             initApp();
         }
     </script>
@@ -486,7 +628,11 @@
                 </div>
                 <div class="form-group">
                     <label for="observaciones-graficas">Observaciones gráficas:</label>
-                    <textarea id="observaciones-graficas"></textarea>
+                    <div id="observaciones-graficas-container" class="image-paste-container">
+                        <div class="image-placeholder">Pegue imágenes aquí con Ctrl+V. Las imágenes se subirán automáticamente a Discord.</div>
+                        <div id="image-container" class="image-container"></div>
+                    </div>
+                    <textarea id="observaciones-graficas-urls" style="display: none;"></textarea>
                 </div>
                 <div class="button-group">
                     <button type="button" class="back-button">Volver al Menú</button>
@@ -677,330 +823,529 @@
     </div>
 
     <script>
-        // Esperar a que el DOM esté completamente cargado
-        
+        // Lista de miembros
+        const miembros = [
+            "ALAN COLLINS", "ALEJANDRO CORLENE", "ANDREW GRAVES", "ANTHONY BLACK",
+            "BELEN GARCÍA", "DAVID TORO", "EDUARDO TABARES", "ELIZABETH NOVIKOV",
+            "ENDER PERES", "HAKEEM WAHID", "HUNTER BLAKE", "JHON MCLAIN",
+            "JOHAN ANDREU", "JOHNNY MACTAVISH", "KEVIN RUALES", "LOGAN WILLIAMS",
+            "LUCAS PRIETO", "MATHEO HERNANDEZ", "MAURICIO LEPOLLO", "MAX WEXLER",
+            "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOLEY", "SOLOMONE LAIN",
+            "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
+        ];
 
-        function initApp() {
-            // Lista de miembros
-            const miembros = [
-                "ALAN COLLINS", "ALEJANDRO CORLENE", "ANDREW GRAVES", "ANTHONY BLACK",
-                "BELEN GARCÍA", "DAVID TORO", "EDUARDO TABARES", "ELIZABETH NOVIKOV",
-                "ENDER PERES", "HAKEEM WAHID", "HUNTER BLAKE", "JHON MCLAIN",
-                "JOHAN ANDREU", "JOHNNY MACTAVISH", "KEVIN RUALES", "LOGAN WILLIAMS",
-                "LUCAS PRIETO", "MATHEO HERNANDEZ", "MAURICIO LEPOLLO", "MAX WEXLER",
-                "RAMON CAMPOS", "RICARDO SAPRISA", "SAMUEL FOLEY", "SOLOMONE LAIN",
-                "STEFANO ALVAREZ", "TIM BRADFORD", "WALTER BLUE"
-            ];
+        // Webhooks de Discord
+        const webhooks = {
+            informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+            aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+            entrega_suministros: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+            libro_guardia: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+            entradas_salidas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
+            registro_unidades: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX"
+        };
 
-            // Webhooks de Discord
-            const webhooks = {
-                informes: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-                aduanas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-                entrega_suministros: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-                libro_guardia: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-                entradas_salidas: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX",
-                registro_unidades: "https://discord.com/api/webhooks/1223292413506883667/vtj8Hoa6ps8z20A-o2-RFnjVF5HC4CcRPyC2s5jE--WupXdzpSJ1r2Ogiq4HpOjk9kIX"
+        // Webhook para imágenes
+        const imageWebhook = "https://discord.com/api/webhooks/1415408341450231979/40HZJQiV2TmjSrGQw9UsJ6nnu-IqFso58beF12OSQ6kiei1vZKv0rQvj3MmVGBVchSiS";
+
+        // Nombres para los bots de Discord
+        const botNames = {
+            informes: "INFORMES",
+            aduanas: "ADUANAS",
+            entrega_suministros: "ENTREGA DE SUMINISTROS",
+            libro_guardia: "LIBRO DE GUARDIA",
+            entradas_salidas: "ENTRADAS/SALIDAS",
+            registro_unidades: "REGISTRO DE UNIDADES"
+        };
+
+        // Almacenamiento de imágenes
+        let uploadedImages = [];
+
+        // Función para formatear la fecha y hora en español
+        function formatDateTime() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                timeZone: 'UTC'
             };
+            
+            let dateTimeStr = now.toLocaleDateString('es-ES', options);
+            
+            // Capitalizar la primera letra de cada palabra
+            dateTimeStr = dateTimeStr.replace(/\b\w/g, l => l.toUpperCase());
+            
+            return dateTimeStr;
+        }
 
-            // Nombres para los bots de Discord
-            const botNames = {
-                informes: "INFORMES",
-                aduanas: "ADUANAS",
-                entrega_suministros: "ENTREGA DE SUMINISTROS",
-                libro_guardia: "LIBRO DE GUARDIA",
-                entradas_salidas: "ENTRADAS/SALIDAS",
-                registro_unidades: "REGISTRO DE UNIDADES"
-            };
-
-            // Función para formatear la fecha y hora en español
-            function formatDateTime() {
-                const now = new Date();
-                const options = { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit', 
-                    minute: '2-digit', 
-                    second: '2-digit',
-                    timeZone: 'UTC'
-                };
+        // Inicializar la aplicación
+        function initializeApp() {
+            // Llenar selects con la lista de miembros
+            const memberSelects = document.querySelectorAll('select');
+            memberSelects.forEach(select => {
+                // Guardar el primer option (placeholder)
+                const firstOption = select.options[0];
+                select.innerHTML = '';
+                select.appendChild(firstOption);
                 
-                let dateTimeStr = now.toLocaleDateString('es-ES', options);
-                
-                // Capitalizar la primera letra de cada palabra
-                dateTimeStr = dateTimeStr.replace(/\b\w/g, l => l.toUpperCase());
-                
-                return dateTimeStr;
-            }
-
-            // Inicializar la aplicación
-            function initializeApp() {
-                // Llenar selects con la lista de miembros
-                const memberSelects = document.querySelectorAll('select');
-                memberSelects.forEach(select => {
-                    // Guardar el primer option (placeholder)
-                    const firstOption = select.options[0];
-                    select.innerHTML = '';
-                    select.appendChild(firstOption);
-                    
-                    // Agregar opciones de miembros
-                    miembros.forEach(miembro => {
-                        const option = document.createElement('option');
-                        option.value = miembro;
-                        option.textContent = miembro;
-                        select.appendChild(option);
-                    });
+                // Agregar opciones de miembros
+                miembros.forEach(miembro => {
+                    const option = document.createElement('option');
+                    option.value = miembro;
+                    option.textContent = miembro;
+                    select.appendChild(option);
                 });
-                
-                // Establecer hora UTC por defecto en campos de fecha/hora
-                setUTCDateTimeDefaults();
-                
-                // Configurar event listeners
-                setupEventListeners();
-            }
+            });
+            
+            // Establecer hora UTC por defecto en campos de fecha/hora
+            setUTCDateTimeDefaults();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Configurar el contenedor de imágenes
+            setupImagePaste();
+        }
 
-            // Establecer valores por defecto UTC en campos de fecha/hora
-            function setUTCDateTimeDefaults() {
-                const dateTimeStr = formatDateTime();
+        // Configurar el contenedor de pegado de imágenes
+        function setupImagePaste() {
+            const container = document.getElementById('observaciones-graficas-container');
+            
+            container.addEventListener('paste', function(e) {
+                // Obtener los datos pegados
+                const items = e.clipboardData.items;
                 
-                // Establecer en campos relevantes
-                const dateTimeFields = [
-                    'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
-                    'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
-                    'libro-hora-fin', 'registro-hora', 'unidades-fecha-hora'
-                ];
-                
-                dateTimeFields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (field) {
-                        field.value = dateTimeStr;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf('image') !== -1) {
+                        // Es una imagen
+                        const blob = items[i].getAsFile();
+                        const imageId = 'img-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                        
+                        // Crear elemento visual para la imagen
+                        addImageToContainer(blob, imageId);
+                        
+                        // Subir la imagen a Discord
+                        uploadImageToDiscord(blob, imageId, function(imageUrl, id) {
+                            // Actualizar el estado de la imagen
+                            markImageAsUploaded(id, imageUrl);
+                            
+                            // Guardar la URL en el array
+                            uploadedImages.push(imageUrl);
+                            updateHiddenField();
+                            
+                            showNotification('Imagen subida correctamente.', 'success');
+                        }, function(error, id) {
+                            // Actualizar el estado de la imagen en caso de error
+                            markImageAsError(id, error);
+                            showNotification('Error al subir la imagen: ' + error, 'error');
+                            console.error('Error al subir imagen:', error);
+                        });
+                        
+                        e.preventDefault(); // Evitar que se pegue el contenido normal
+                        break;
                     }
-                });
-            }
+                }
+            });
+        }
 
-            // Configurar todos los event listeners
-            function setupEventListeners() {
-                // Menú principal
-                const menuOptions = document.querySelectorAll('.menu-option');
-                menuOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        const target = this.getAttribute('data-target');
-                        showMenuOption(target);
-                    });
-                });
-                
-                // Submenús
-                const submenuOptions = document.querySelectorAll('.submenu-option');
-                submenuOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        const target = this.getAttribute('data-target');
-                        showForm(target);
-                    });
-                });
-                
-                // Botones de volver
-                const backButtons = document.querySelectorAll('.back-button');
-                backButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        showMainMenu();
-                    });
-                });
-                
-                // Formularios
-                setupFormListeners();
+        // Añadir imagen al contenedor visual
+        function addImageToContainer(blob, imageId) {
+            const container = document.getElementById('image-container');
+            const placeholder = container.parentElement.querySelector('.image-placeholder');
+            
+            // Ocultar el placeholder si existe
+            if (placeholder) {
+                placeholder.style.display = 'none';
             }
+            
+            // Crear URL temporal para la imagen
+            const objectUrl = URL.createObjectURL(blob);
+            
+            // Crear contenedor de imagen
+            const imageWrapper = document.createElement('div');
+            imageWrapper.className = 'image-wrapper';
+            imageWrapper.id = 'wrapper-' + imageId;
+            
+            // Crear imagen
+            const img = document.createElement('img');
+            img.src = objectUrl;
+            img.alt = "Imagen pegada";
+            
+            // Botón para eliminar imagen
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-image';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function() {
+                removeImage(imageId, objectUrl);
+            };
+            
+            // Estado de la imagen
+            const status = document.createElement('div');
+            status.className = 'image-status status-uploading';
+            status.id = 'status-' + imageId;
+            status.textContent = 'Subiendo...';
+            
+            // Añadir elementos al contenedor
+            imageWrapper.appendChild(img);
+            imageWrapper.appendChild(removeBtn);
+            imageWrapper.appendChild(status);
+            container.appendChild(imageWrapper);
+        }
 
-            // Mostrar opción del menú principal
-            function showMenuOption(target) {
-                // Ocultar todo primero
-                hideAll();
+        // Marcar imagen como subida
+        function markImageAsUploaded(imageId, imageUrl) {
+            const status = document.getElementById('status-' + imageId);
+            if (status) {
+                status.className = 'image-status status-success';
+                status.textContent = 'Subida ✓';
                 
-                if (target === 'informes') {
-                    document.getElementById('form-informes').style.display = 'block';
-                } else if (target === 'informes-suministros') {
-                    document.getElementById('submenu-informes-suministros').style.display = 'grid';
-                } else if (target === 'registro-guardia') {
-                    document.getElementById('submenu-registro-guardia').style.display = 'grid';
-                } else if (target === 'registro-unidades') {
-                    document.getElementById('form-registro-unidades').style.display = 'block';
+                // Actualizar la imagen con la URL de Discord
+                const wrapper = document.getElementById('wrapper-' + imageId);
+                if (wrapper) {
+                    const img = wrapper.querySelector('img');
+                    img.src = imageUrl;
+                    
+                    // Liberar la URL temporal
+                    URL.revokeObjectURL(img.src);
                 }
             }
+        }
 
-            // Mostrar formulario específico
-            function showForm(formId) {
-                hideAll();
-                document.getElementById(`form-${formId}`).style.display = 'block';
+        // Marcar imagen con error
+        function markImageAsError(imageId, error) {
+            const status = document.getElementById('status-' + imageId);
+            if (status) {
+                status.className = 'image-status status-error';
+                status.textContent = 'Error: ' + error;
             }
+        }
 
-            // Mostrar menú principal
-            function showMainMenu() {
-                hideAll();
-                document.getElementById('main-menu').style.display = 'grid';
+        // Eliminar imagen
+        function removeImage(imageId, objectUrl) {
+            // Liberar URL temporal
+            URL.revokeObjectURL(objectUrl);
+            
+            // Eliminar elemento del DOM
+            const wrapper = document.getElementById('wrapper-' + imageId);
+            if (wrapper) {
+                wrapper.remove();
             }
-
-            // Ocultar todos los elementos
-            function hideAll() {
-                const elementsToHide = [
-                    'main-menu', 'submenu-informes-suministros', 'submenu-registro-guardia',
-                    'form-informes', 'form-aduanas', 'form-entrega-suministros',
-                    'form-libro-guardia', 'form-entradas-salidas', 'form-registro-unidades'
-                ];
-                
-                elementsToHide.forEach(id => {
-                    const element = document.getElementById(id);
-                    if (element) element.style.display = 'none';
-                });
-                
-                // Ocultar notificación
-                document.getElementById('notification').style.display = 'none';
+            
+            // Eliminar del array de imágenes subidas
+            const index = uploadedImages.findIndex(url => url.includes(imageId));
+            if (index !== -1) {
+                uploadedImages.splice(index, 1);
+                updateHiddenField();
             }
-
-            // Configurar listeners para los formularios
-            function setupFormListeners() {
-                // Informes
-                document.getElementById('informes-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    sendToDiscord('informes', formatInformesData());
-                });
-                
-                // Aduanas
-                document.getElementById('aduanas-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    sendToDiscord('aduanas', formatAduanasData());
-                });
-                
-                // Entrega de suministros
-                document.getElementById('entrega-suministros-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    sendToDiscord('entrega_suministros', formatSuministrosData());
-                });
-                
-                // Libro de guardia
-                document.getElementById('libro-guardia-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    sendToDiscord('libro_guardia', formatLibroGuardiaData());
-                });
-                
-                // Entradas y salidas
-                document.getElementById('entradas-salidas-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    sendToDiscord('entradas_salidas', formatEntradasSalidasData());
-                });
-                
-                // Registro de unidades
-                document.getElementById('registro-unidades-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    sendToDiscord('registro_unidades', formatRegistroUnidadesData());
-                });
+            
+            // Mostrar placeholder si no hay imágenes
+            const container = document.getElementById('image-container');
+            if (container.children.length === 0) {
+                const placeholder = container.parentElement.querySelector('.image-placeholder');
+                if (placeholder) {
+                    placeholder.style.display = 'block';
+                }
             }
+        }
 
-            // Funciones para formatear datos para Discord
-            function formatInformesData() {
-                return `**Miembro al mando:** ${document.getElementById('miembro-mando').value}
+        // Actualizar campo oculto con URLs de imágenes
+        function updateHiddenField() {
+            document.getElementById('observaciones-graficas-urls').value = uploadedImages.join(', ');
+        }
+
+        // Subir imagen a Discord
+        function uploadImageToDiscord(blob, imageId, successCallback, errorCallback) {
+            const formData = new FormData();
+            formData.append('file', blob, 'image.png');
+            
+            fetch(imageWebhook, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Discord devuelve un array de attachments con la URL
+                if (data.attachments && data.attachments.length > 0) {
+                    successCallback(data.attachments[0].url, imageId);
+                } else {
+                    throw new Error('No se pudo obtener la URL de la imagen');
+                }
+            })
+            .catch(error => {
+                errorCallback(error.message, imageId);
+            });
+        }
+
+        // Establecer valores por defecto UTC en campos de fecha/hora
+        function setUTCDateTimeDefaults() {
+            const dateTimeStr = formatDateTime();
+            
+            // Establecer en campos relevantes
+            const dateTimeFields = [
+                'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
+                'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
+                'libro-hora-fin', 'registro-hora', 'unidades-fecha-hora'
+            ];
+            
+            dateTimeFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.value = dateTimeStr;
+                }
+            });
+        }
+
+        // Configurar todos los event listeners
+        function setupEventListeners() {
+            // Menú principal
+            const menuOptions = document.querySelectorAll('.menu-option');
+            menuOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    showMenuOption(target);
+                });
+            });
+            
+            // Submenús
+            const submenuOptions = document.querySelectorAll('.submenu-option');
+            submenuOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    showForm(target);
+                });
+            });
+            
+            // Botones de volver
+            const backButtons = document.querySelectorAll('.back-button');
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    showMainMenu();
+                });
+            });
+            
+            // Formularios
+            setupFormListeners();
+        }
+
+        // Mostrar opción del menú principal
+        function showMenuOption(target) {
+            // Ocultar todo primero
+            hideAll();
+            
+            if (target === 'informes') {
+                document.getElementById('form-informes').style.display = 'block';
+            } else if (target === 'informes-suministros') {
+                document.getElementById('submenu-informes-suministros').style.display = 'grid';
+            } else if (target === 'registro-guardia') {
+                document.getElementById('submenu-registro-guardia').style.display = 'grid';
+            } else if (target === 'registro-unidades') {
+                document.getElementById('form-registro-unidades').style.display = 'block';
+            }
+        }
+
+        // Mostrar formulario específico
+        function showForm(formId) {
+            hideAll();
+            document.getElementById(`form-${formId}`).style.display = 'block';
+        }
+
+        // Mostrar menú principal
+        function showMainMenu() {
+            hideAll();
+            document.getElementById('main-menu').style.display = 'grid';
+        }
+
+        // Ocultar todos los elementos
+        function hideAll() {
+            const elementsToHide = [
+                'main-menu', 'submenu-informes-suministros', 'submenu-registro-guardia',
+                'form-informes', 'form-aduanas', 'form-entrega-suministros',
+                'form-libro-guardia', 'form-entradas-salidas', 'form-registro-unidades'
+            ];
+            
+            elementsToHide.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.style.display = 'none';
+            });
+            
+            // Ocultar notificación
+            document.getElementById('notification').style.display = 'none';
+        }
+
+        // Configurar listeners para los formularios
+        function setupFormListeners() {
+            // Informes
+            document.getElementById('informes-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendToDiscord('informes', formatInformesData());
+            });
+            
+            // Aduanas
+            document.getElementById('aduanas-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendToDiscord('aduanas', formatAduanasData());
+            });
+            
+            // Entrega de suministros
+            document.getElementById('entrega-suministros-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendToDiscord('entrega_suministros', formatSuministrosData());
+            });
+            
+            // Libro de guardia
+            document.getElementById('libro-guardia-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendToDiscord('libro_guardia', formatLibroGuardiaData());
+            });
+            
+            // Entradas y salidas
+            document.getElementById('entradas-salidas-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendToDiscord('entradas_salidas', formatEntradasSalidasData());
+            });
+            
+            // Registro de unidades
+            document.getElementById('registro-unidades-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendToDiscord('registro_unidades', formatRegistroUnidadesData());
+            });
+        }
+
+        // Funciones para formatear datos para Discord
+        function formatInformesData() {
+            const imageUrls = document.getElementById('observaciones-graficas-urls').value;
+            const imageText = imageUrls ? `**Imágenes:** ${imageUrls}` : "**Imágenes:** No se proporcionaron imágenes";
+            
+            return `**Miembro al mando:** ${document.getElementById('miembro-mando').value}
 **Miembros implicados:** ${document.getElementById('miembros-implicados').value}
 **Lugar fecha y hora:** ${document.getElementById('lugar-fecha-hora').value}
 **Unidades y material utilizado:** ${document.getElementById('unidades-material').value}
 **Informe de situación:** ${document.getElementById('informe-situacion').value}
 **Observaciones adicionales:** ${document.getElementById('observaciones').value}
-**Observaciones gráficas:** ${document.getElementById('observaciones-graficas').value}`;
-            }
+${imageText}`;
+        }
 
-            function formatAduanasData() {
-                return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('aduanas-miembro-mando').value}
+        function formatAduanasData() {
+            return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('aduanas-miembro-mando').value}
 **Miembros Implicados:** ${document.getElementById('aduanas-miembros').value}
 **Unidades Utilizadas:** ${document.getElementById('aduanas-unidades').value}
 **Hora de Inicio:** ${document.getElementById('aduanas-hora-inicio').value}
 **Hora de Finalización:** ${document.getElementById('aduanas-hora-fin').value}
 **Observaciones:** ${document.getElementById('aduanas-observaciones').value}`;
-            }
+        }
 
-            function formatSuministrosData() {
-                return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('suministros-miembro-mando').value}
+        function formatSuministrosData() {
+            return `**Miembro al Mando (Rango y Apellido):** ${document.getElementById('suministros-miembro-mando').value}
 **Miembros Implicados:** ${document.getElementById('suministros-miembros').value}
 **Unidades Utilizadas:** ${document.getElementById('suministros-unidades').value}
 **Hora de Inicio:** ${document.getElementById('suministros-hora-inicio').value}
 **Hora de Finalización:** ${document.getElementById('suministros-hora-fin').value}
 **Observaciones:** ${document.getElementById('suministros-observaciones').value}`;
-            }
+        }
 
-            function formatLibroGuardiaData() {
-                return `**Rango y nombre:** ${document.getElementById('libro-rango-nombre').value}
+        function formatLibroGuardiaData() {
+            return `**Rango y nombre:** ${document.getElementById('libro-rango-nombre').value}
 **Hora de inicio:** ${document.getElementById('libro-hora-inicio').value}
 **Hora de fin:** ${document.getElementById('libro-hora-fin').value}
 **Observaciones:** ${document.getElementById('libro-observaciones').value}`;
-            }
+        }
 
-            function formatEntradasSalidasData() {
-                return `**Hora:** ${document.getElementById('registro-hora').value}
+        function formatEntradasSalidasData() {
+            return `**Hora:** ${document.getElementById('registro-hora').value}
 **Placa del vehículo:** ${document.getElementById('registro-placa').value}
 **Nombre de la persona:** ${document.getElementById('registro-nombre').value}
 **Motivo de ingreso / salida:** ${document.getElementById('registro-motivo').value}`;
-            }
+        }
 
-            function formatRegistroUnidadesData() {
-                return `**NOMBRE:** ${document.getElementById('unidades-nombre').value}
+        function formatRegistroUnidadesData() {
+            return `**NOMBRE:** ${document.getElementById('unidades-nombre').value}
 **UNIDAD:** ${document.getElementById('unidades-unidad').value}
 **FECHA/HORA:** ${document.getElementById('unidades-fecha-hora').value}
 **USO DE INSUMOS:** ${document.getElementById('unidades-insumos').value}
 **MOTIVO DEL USO DE INSUMOS:** ${document.getElementById('unidades-motivo').value}`;
-            }
+        }
 
-            // Enviar datos a Discord via webhook
-            function sendToDiscord(type, content) {
-                const webhookURL = webhooks[type];
-                
-                // Verificar si la URL del webhook está configurada correctamente
-                if (!webhookURL) {
-                    showNotification('Por favor, configura las URLs de webhook en el código JavaScript.', 'error');
-                    return;
+        // Enviar datos a Discord via webhook
+        function sendToDiscord(type, content) {
+            const webhookURL = webhooks[type];
+            
+            // Verificar si la URL del webhook está configurada correctamente
+            if (!webhookURL) {
+                showNotification('Por favor, configura las URLs de webhook en el código JavaScript.', 'error');
+                return;
+            }
+            
+            const payload = {
+                username: botNames[type],
+                avatar_url: "https://i.imgur.com/FeE9uvO.png",
+                content: content
+            };
+            
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(response => {
+                if (response.ok) {
+                    showNotification('Formulario enviado correctamente a Discord.', 'success');
+                    // Limpiar formulario después de enviar
+                    document.querySelector(`#form-${type.split('_').join('-')} form`).reset();
+                    // Restablecer hora UTC
+                    setUTCDateTimeDefaults();
+                    // Limpiar contenedor de imágenes
+                    clearImageContainer();
+                } else {
+                    showNotification('Error al enviar el formulario. Intenta nuevamente.', 'error');
                 }
-                
-                const payload = {
-                    username: botNames[type],
-                    avatar_url: "https://i.imgur.com/FeE9uvO.png",
-                    content: content
-                };
-                
-                fetch(webhookURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                })
-                .then(response => {
-                    if (response.ok) {
-                        showNotification('Formulario enviado correctamente a Discord.', 'success');
-                        // Limpiar formulario después de enviar
-                        document.querySelector(`#form-${type.split('_').join('-')} form`).reset();
-                        // Restablecer hora UTC
-                        setUTCDateTimeDefaults();
-                    } else {
-                        showNotification('Error al enviar el formulario. Intenta nuevamente.', 'error');
-                    }
-                })
-                .catch(error => {
-                    // Aunque haya error de conexión, a veces el mensaje llega a Discord
-                    // así que mostramos un mensaje de advertencia en lugar de error
-                    showNotification('El formulario se ha enviado, pero hubo un problema de conexión. Verifica en Discord.', 'error');
-                    console.error('Error:', error);
-                });
-            }
+            })
+            .catch(error => {
+                // Aunque haya error de conexión, a veces el mensaje llega a Discord
+                // así que mostramos un mensaje de advertencia en lugar de error
+                showNotification('El formulario se ha enviado, pero hubo un problema de conexión. Verifica en Discord.', 'error');
+                console.error('Error:', error);
+            });
+        }
 
-            // Mostrar notificación
-            function showNotification(message, type) {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.className = 'notification ' + type;
-                notification.style.display = 'block';
-                
-                // Ocultar notificación después de 5 segundos
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 5000);
+        // Limpiar contenedor de imágenes
+        function clearImageContainer() {
+            const container = document.getElementById('image-container');
+            container.innerHTML = '';
+            uploadedImages = [];
+            document.getElementById('observaciones-graficas-urls').value = '';
+            
+            // Mostrar placeholder
+            const placeholder = container.parentElement.querySelector('.image-placeholder');
+            if (placeholder) {
+                placeholder.style.display = 'block';
             }
+        }
 
-            // Inicializar la aplicación
+        // Mostrar notificación
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type;
+            notification.style.display = 'block';
+            
+            // Ocultar notificación después de 5 segundos
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // Inicializar la aplicación cuando el DOM esté listo
+        function initApp() {
             initializeApp();
         }
     </script>
