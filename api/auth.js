@@ -92,14 +92,20 @@ module.exports = async (req, res) => {
         
         const memberData = await memberResponse.json();
         
-        // Verificar si el usuario tiene el rol requerido
-        const ALLOWED_ROLE_ID = '754043321349046435';
-        const hasRequiredRole = memberData.roles && memberData.roles.includes(ALLOWED_ROLE_ID);
-        
-        if (!hasRequiredRole) {
-          res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('Se recuerda, que solo personal activo de LSAF tiene acceso.') });
-          return res.end();
-        }
+        // Verificar si el usuario tiene AL MENOS UNO de los roles requeridos
+const ALLOWED_ROLE_IDS = [
+  '754043321349046435',  // Primer rol
+  '778440724919615520'   // Segundo rol
+];
+
+// Comprobar si el usuario tiene al menos uno de los roles permitidos
+const hasRequiredRole = memberData.roles && 
+  ALLOWED_ROLE_IDS.some(roleId => memberData.roles.includes(roleId));
+
+if (!hasRequiredRole) {
+  res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('Se recuerda, que solo personal activo de LSAF tiene acceso.') });
+  return res.end();
+}
         
         // Si todo está bien, redirigir al index.html
         // Usamos una página intermedia para establecer la cookie y luego redirigir
@@ -111,7 +117,7 @@ module.exports = async (req, res) => {
         <body>
             <script>
                 // Establecer la cookie de autenticación
-                document.cookie = 'userAuth=true; path=/; max-age=3600; secure; samesite=lax';
+                document.cookie = 'userAuth=true; path=/; max-age=300; secure; samesite=lax';
                 // Redirigir al index
                 window.location.href = '/index.html';
             </script>
@@ -140,4 +146,5 @@ module.exports = async (req, res) => {
     res.end();
   }
 };
+
 
