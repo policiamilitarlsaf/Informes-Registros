@@ -357,68 +357,6 @@
             pointer-events: none;
             z-index: -1;
         }
-
-        /* Nuevos estilos para el editor de imágenes */
-        .image-editor {
-            width: 100%;
-            min-height: 120px;
-            padding: 12px 15px;
-            background-color: rgba(26, 31, 28, 0.7);
-            border: 1px solid var(--military-light);
-            border-radius: 5px;
-            font-size: 16px;
-            color: var(--military-white);
-            resize: vertical;
-            overflow: auto;
-            text-align: left;
-        }
-
-        .image-editor:focus {
-            outline: none;
-            border-color: var(--military-tan);
-            box-shadow: 0 0 0 2px rgba(214, 202, 157, 0.3);
-        }
-
-        .image-editor img {
-            max-width: 100%;
-            height: auto;
-            margin: 5px 0;
-            border: 1px solid var(--military-tan);
-            border-radius: 3px;
-        }
-
-        .editor-toolbar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            padding: 8px;
-            background-color: rgba(42, 65, 42, 0.5);
-            border-radius: 5px;
-            border: 1px solid var(--military-light);
-        }
-
-        .toolbar-btn {
-            background: var(--military-medium);
-            color: var(--military-tan);
-            border: 1px solid var(--military-light);
-            border-radius: 4px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .toolbar-btn:hover {
-            background: var(--military-dark);
-            border-color: var(--military-tan);
-        }
-
-        .image-paste-info {
-            font-size: 0.85rem;
-            color: var(--military-light);
-            margin-top: 5px;
-            font-style: italic;
-        }
     </style>
 </head>
 <body>
@@ -548,16 +486,7 @@
                 </div>
                 <div class="form-group">
                     <label for="observaciones-graficas">Observaciones gráficas:</label>
-                    <div class="editor-toolbar">
-                        <button type="button" class="toolbar-btn" id="paste-image-btn">
-                            <i class="fas fa-paste"></i> Pegar imagen
-                        </button>
-                        <button type="button" class="toolbar-btn" id="clear-images-btn">
-                            <i class="fas fa-trash"></i> Limpiar
-                        </button>
-                    </div>
-                    <div id="observaciones-graficas" class="image-editor" contenteditable="true"></div>
-                    <p class="image-paste-info">Puede pegar imágenes directamente (Ctrl+V) o usar el botón de pegar imagen.</p>
+                    <textarea id="observaciones-graficas"></textarea>
                 </div>
                 <div class="button-group">
                     <button type="button" class="back-button">Volver al Menú</button>
@@ -828,85 +757,6 @@
                 
                 // Configurar event listeners
                 setupEventListeners();
-
-                // Configurar funcionalidad para pegar imágenes
-                setupImagePaste();
-            }
-
-            // Configurar funcionalidad para pegar imágenes
-            function setupImagePaste() {
-                const imageEditor = document.getElementById('observaciones-graficas');
-                const pasteImageBtn = document.getElementById('paste-image-btn');
-                const clearImagesBtn = document.getElementById('clear-images-btn');
-                
-                // Permitir pegar imágenes con Ctrl+V
-                imageEditor.addEventListener('paste', function(e) {
-                    // Verificar si hay imágenes en el portapapeles
-                    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-                    
-                    for (let i = 0; i < items.length; i++) {
-                        if (items[i].type.indexOf('image') !== -1) {
-                            const blob = items[i].getAsFile();
-                            const reader = new FileReader();
-                            
-                            reader.onload = function(event) {
-                                const img = document.createElement('img');
-                                img.src = event.target.result;
-                                img.style.maxWidth = '100%';
-                                img.style.height = 'auto';
-                                img.style.margin = '5px 0';
-                                img.style.border = '1px solid #d6ca9d';
-                                img.style.borderRadius = '3px';
-                                
-                                // Insertar la imagen en el editor
-                                document.execCommand('insertHTML', false, img.outerHTML);
-                            };
-                            
-                            reader.readAsDataURL(blob);
-                            e.preventDefault();
-                            break;
-                        }
-                    }
-                });
-                
-                // Botón para pegar imagen
-                pasteImageBtn.addEventListener('click', function() {
-                    // Solicitar acceso al portapapeles
-                    navigator.clipboard.read().then(clipboardItems => {
-                        for (const clipboardItem of clipboardItems) {
-                            for (const type of clipboardItem.types) {
-                                if (type.startsWith('image/')) {
-                                    clipboardItem.getType(type).then(blob => {
-                                        const reader = new FileReader();
-                                        reader.onload = function(event) {
-                                            const img = document.createElement('img');
-                                            img.src = event.target.result;
-                                            img.style.maxWidth = '100%';
-                                            img.style.height = 'auto';
-                                            img.style.margin = '5px 0';
-                                            img.style.border = '1px solid #d6ca9d';
-                                            img.style.borderRadius = '3px';
-                                            
-                                            // Insertar la imagen en el editor
-                                            document.execCommand('insertHTML', false, img.outerHTML);
-                                        };
-                                        reader.readAsDataURL(blob);
-                                    });
-                                    return;
-                                }
-                            }
-                        }
-                        alert('No se encontró ninguna imagen en el portapapeles.');
-                    }).catch(err => {
-                        console.error('Error al acceder al portapapeles:', err);
-                        alert('No se pudo acceder al portapapeles. Asegúrese de que el navegador tenga los permisos necesarios.');
-                    });
-                });
-                
-                // Botón para limpiar imágenes
-                clearImagesBtn.addEventListener('click', function() {
-                    imageEditor.innerHTML = '';
-                });
             }
 
             // Establecer valores por defecto UTC en campos de fecha/hora
@@ -1052,7 +902,7 @@
 **Unidades y material utilizado:** ${document.getElementById('unidades-material').value}
 **Informe de situación:** ${document.getElementById('informe-situacion').value}
 **Observaciones adicionales:** ${document.getElementById('observaciones').value}
-**Observaciones gráficas:** ${document.getElementById('observaciones-graficas').innerHTML}`;
+**Observaciones gráficas:** ${document.getElementById('observaciones-graficas').value}`;
             }
 
             function formatAduanasData() {
@@ -1125,10 +975,6 @@
                         document.querySelector(`#form-${type.split('_').join('-')} form`).reset();
                         // Restablecer hora UTC
                         setUTCDateTimeDefaults();
-                        // Limpiar el editor de imágenes
-                        if (type === 'informes') {
-                            document.getElementById('observaciones-graficas').innerHTML = '';
-                        }
                     } else {
                         showNotification('Error al enviar el formulario. Intenta nuevamente.', 'error');
                     }
