@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
         
         // Si el usuario no está en el servidor
         if (memberResponse.status === 404) {
-          res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('No estás en el servidor requerido') });
+          res.writeHead(302, { Location: '/login.html?error=' + encodeURIComponent('No se detecta tu presencia en el servidor de LSAF, únete para acceder') });
           return res.end();
         }
         
@@ -146,5 +146,6 @@ if (!hasRequiredRole) {
     res.end();
   }
 };
+
 
 
