@@ -1080,24 +1080,30 @@
             });
         }
 
-        // Establecer valores por defecto UTC en campos de fecha/hora
-        function setUTCDateTimeDefaults() {
-            const dateTimeStr = formatDateTime();
-            
-            // Establecer en campos relevantes
-            const dateTimeFields = [
-                'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
-                'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
-                'libro-hora-fin', 'registro-hora', 'unidades-fecha-hora'
-            ];
-            
-            dateTimeFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    field.value = dateTimeStr;
-                }
-            });
+        // Establecer valores por defecto GMT+3 en campos de fecha/hora
+function setUTCDateTimeDefaults() {
+    const now = new Date();
+
+    // Ajustar manualmente a UTC+3
+    now.setUTCHours(now.getUTCHours() + 3);
+
+    // Formato compatible con datetime-local (YYYY-MM-DDTHH:MM)
+    const localISOTime = now.toISOString().slice(0, 16);
+
+    // Establecer en campos relevantes
+    const dateTimeFields = [
+        'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
+        'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
+        'libro-hora-fin', 'registro-hora', 'unidades-fecha-hora'
+    ];
+
+    dateTimeFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = localISOTime;
         }
+    });
+}
 
         // Configurar todos los event listeners
         function setupEventListeners() {
