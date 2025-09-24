@@ -1080,11 +1080,22 @@
             });
         }
 
-        // Establecer valores por defecto UTC en campos de fecha/hora
+        // Función para obtener la fecha/hora actual en GMT+3
+function formatDateTime() {
+    const now = new Date();
+    
+    // Aplicar offset GMT+3 (3 horas adelante de UTC)
+    const offset = 3; // Horas de diferencia para GMT+3
+    const gmt3Time = new Date(now.getTime() + (offset * 60 * 60 * 1000));
+    
+    // Formatear a string en formato ISO (YYYY-MM-DDTHH:MM)
+    return gmt3Time.toISOString().slice(0, 16);
+}
+
+// Establecer valores por defecto en GMT+3
 function setUTCDateTimeDefaults() {
     const dateTimeStr = formatDateTime();
     
-    // Establecer en campos relevantes
     const dateTimeFields = [
         'lugar-fecha-hora', 'aduanas-hora-inicio', 'aduanas-hora-fin',
         'suministros-hora-inicio', 'suministros-hora-fin', 'libro-hora-inicio',
