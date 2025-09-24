@@ -1082,9 +1082,9 @@
 
         
     
-    // Establecer valores por defecto con hora de Argentina
+    // Establecer valores por defecto UTC en campos de fecha/hora
 function setUTCDateTimeDefaults() {
-    const dateTimeStr = formatDateTimeArgentina(); // Nueva función
+    const dateTimeStr = formatDateTime();
     
     // Establecer en campos relevantes
     const dateTimeFields = [
@@ -1099,26 +1099,6 @@ function setUTCDateTimeDefaults() {
             field.value = dateTimeStr;
         }
     });
-}
-
-// Nueva función para obtener hora de Argentina
-function formatDateTimeArgentina() {
-    const now = new Date();
-    
-    // Convertir a hora de Argentina (UTC-3)
-    const offsetArgentina = -3 * 60; // UTC-3 en minutos
-    const localTime = now.getTime();
-    const utcTime = localTime + (now.getTimezoneOffset() * 60000);
-    const argentinaTime = new Date(utcTime + (offsetArgentina * 60000));
-    
-    // Formatear a string compatible con datetime-local (YYYY-MM-DDTHH:MM)
-    const year = argentinaTime.getUTCFullYear();
-    const month = String(argentinaTime.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(argentinaTime.getUTCDate()).padStart(2, '0');
-    const hours = String(argentinaTime.getUTCHours()).padStart(2, '0');
-    const minutes = String(argentinaTime.getUTCMinutes()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 
