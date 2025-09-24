@@ -1082,9 +1082,9 @@
 
         
     
-    // Establecer valores por defecto UTC en campos de fecha/hora
-function setUTCDateTimeDefaults() {
-    const dateTimeStr = formatDateTime();
+   // Establecer valores por defecto con hora de Argentina
+function setArgentinaDateTimeDefaults() {
+    const dateTimeStr = formatDateTimeArgentina();
     
     // Establecer en campos relevantes
     const dateTimeFields = [
@@ -1099,6 +1099,66 @@ function setUTCDateTimeDefaults() {
             field.value = dateTimeStr;
         }
     });
+}
+
+// Función corregida para obtener hora de Argentina
+function formatDateTimeArgentina() {
+    const now = new Date();
+    
+    // Obtener la hora actual en UTC y convertir a Argentina (UTC-3)
+    const utcHours = now.getUTCHours();
+    const argentinaHours = (utcHours - 3 + 24) % 24; // Argentina es UTC-3
+    
+    // Ajustar la fecha si la conversión cruza un día
+    const adjustedDate = new Date(now);
+    if (utcHours < 3) {
+        adjustedDate.setUTCDate(adjustedDate.getUTCDate() - 1);
+    }
+    
+    const year = adjustedDate.getUTCFullYear();
+    const month = String(adjustedDate.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(adjustedDate.getUTCDate()).padStart(2, '0');
+    const hours = String(argentinaHours).padStart(2, '0');
+    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+    
+    // Formato 1: Para inputs datetime-local (con T)
+    // return `${year}-${month}-${day}T${hours}:${minutes}`;
+    
+    // Formato 2: Más legible (sin T, con espacio)
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+// Alternativa más simple y confiable usando toLocaleString
+function formatDateTimeArgentinaSimple() {
+    const now = new Date();
+    
+    // Usar toLocaleString para convertir directamente a hora de Argentina
+    return now.toLocaleString('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).replace(',', ''); // Formato: "24/09/2025 02:52"
+}
+
+// Si prefieres el formato YYYY-MM-DD HH:MM en lugar de DD/MM/YYYY HH:MM
+function formatDateTimeArgentinaISO() {
+    const now = new Date();
+    
+    const argentinaTime = new Date(now.toLocaleString('en-US', {
+        timeZone: 'America/Argentina/Buenos_Aires'
+    }));
+    
+    const year = argentinaTime.getFullYear();
+    const month = String(argentinaTime.getMonth() + 1).padStart(2, '0');
+    const day = String(argentinaTime.getDate()).padStart(2, '0');
+    const hours = String(argentinaTime.getHours()).padStart(2, '0');
+    const minutes = String(argentinaTime.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
 
