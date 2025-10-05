@@ -74,7 +74,7 @@ module.exports = async (req, res) => {
         const userData = await userResponse.json();
         
         // Obtener información de membresía del servidor
-        const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/390267426157101064/member`, {
+        const memberResponse = await fetch(`https://discord.com/api/users/@me/guilds/1252010866627579954/member`, {
           headers: {
             Authorization: `Bearer ${tokenData.access_token}`,
           },
@@ -94,8 +94,8 @@ module.exports = async (req, res) => {
         
         // Verificar si el usuario tiene AL MENOS UNO de los roles requeridos
 const ALLOWED_ROLE_IDS = [
-  '754043321349046435',  // Primer rol
-  '778440724919615520'   // Segundo rol
+  '1252033078013198377',  // Primer rol
+  '1252033134883508239'   // Segundo rol
 ];
 
 // Comprobar si el usuario tiene al menos uno de los roles permitidos
@@ -146,6 +146,7 @@ if (!hasRequiredRole) {
     res.end();
   }
 };
+
 
 
 
